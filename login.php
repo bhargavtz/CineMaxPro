@@ -58,56 +58,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+require_once __DIR__ . '/includes/header.php'; // Include header AFTER PHP logic
 ?>
 
-<!-- Login Form -->
-<div class="form-signin">
-    <h1 class="h3 mb-3 fw-normal text-center">Log In</h1>
+<div class="auth-container">
+    <div class="form-signin">
+        <h1 class="h3 mb-3 fw-normal text-center">Log In</h1>
 
-    <?php if (!empty($login_error)): ?>
-        <div class="alert alert-<?php echo (strpos($login_error, 'successful') !== false ? 'success' : 'danger'); ?> alert-dismissible fade show" role="alert">
-            <?php echo htmlspecialchars($login_error); ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    <?php endif; ?>
+        <?php if (!empty($login_error)): ?>
+            <div class="alert alert-<?php echo (strpos($login_error, 'successful') !== false ? 'success' : 'danger'); ?> alert-dismissible fade show" role="alert">
+                <?php echo htmlspecialchars($login_error); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
 
-    <form action="login.php" method="POST" novalidate>
-        <!-- CSRF Token -->
-        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
+        <form action="login.php" method="POST" novalidate>
+            <!-- CSRF Token -->
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
 
-        <div class="form-floating">
-            <input type="text" class="form-control <?php echo isset($errors['identifier']) ? 'is-invalid' : ''; ?>" id="identifier" name="identifier" placeholder="Email address" value="<?php echo isset($_POST['identifier']) ? htmlspecialchars($_POST['identifier']) : ''; ?>" required autofocus>
-            <label for="identifier">Email address</label>
-            <?php if (isset($errors['identifier'])): ?>
-                <div class="invalid-feedback"><?php echo $errors['identifier']; ?></div>
-            <?php endif; ?>
-        </div>
+            <div class="form-floating">
+                <input type="email" class="form-control <?php echo isset($errors['identifier']) ? 'is-invalid' : ''; ?>" id="identifier" name="identifier" placeholder="Email address" value="<?php echo isset($_POST['identifier']) ? htmlspecialchars($_POST['identifier']) : ''; ?>" required autofocus autocomplete="username">
+                <label for="identifier">Email address</label>
+                <?php if (isset($errors['identifier'])): ?>
+                    <div class="invalid-feedback"><?php echo $errors['identifier']; ?></div>
+                <?php endif; ?>
+            </div>
 
-        <div class="form-floating position-relative">
-            <input type="password" class="form-control <?php echo isset($errors['password']) ? 'is-invalid' : ''; ?>" id="password" name="password" placeholder="Password" required>
-            <label for="password">Password</label>
-            <span class="toggle-password position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;"><i class="fas fa-eye"></i></span> <!-- Font Awesome icon for toggle -->
-            <?php if (isset($errors['password'])): ?>
-                <div class="invalid-feedback"><?php echo $errors['password']; ?></div>
-            <?php endif; ?>
-        </div>
+            <div class="form-floating position-relative">
+                <input type="password" class="form-control <?php echo isset($errors['password']) ? 'is-invalid' : ''; ?>" id="password" name="password" placeholder="Password" required autocomplete="current-password">
+                <label for="password">Password</label>
+                <span class="toggle-password position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;"><i class="fas fa-eye"></i></span> <!-- Font Awesome icon for toggle -->
+                <?php if (isset($errors['password'])): ?>
+                    <div class="invalid-feedback"><?php echo $errors['password']; ?></div>
+                <?php endif; ?>
+            </div>
 
-        <div class="form-check text-start mb-3">
-            <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
-            <label class="form-check-label" for="flexCheckDefault">
-                Remember me
-            </label>
-        </div>
+            <div class="form-check text-start mb-3">
+                <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    Remember me
+                </label>
+            </div>
 
-        <button class="btn btn-primary w-100 py-2" type="submit">Log In</button>
-    </form>
+            <button class="btn btn-primary w-100 py-2" type="submit">Log In</button>
+        </form>
 
-    <p class="mt-5 mb-3 text-body-secondary text-center">Don't have an account? <a href="signup.php" class="link-offset-2">Sign Up</a></p>
-    <p class="mt-3 mb-3 text-body-secondary text-center"><a href="forgot_password.php" class="link-offset-2">Forgot Password?</a></p>
+        <p class="mt-5 mb-3 text-body-secondary text-center">Don't have an account? <a href="signup.php" class="link-offset-2">Sign Up</a></p>
+        <p class="mt-3 mb-3 text-body-secondary text-center"><a href="forgot_password.php" class="link-offset-2">Forgot Password?</a></p>
+    </div>
 </div>
 
-<!-- Font Awesome for password toggle icon -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 <script>
     // Ensure Font Awesome icons are correctly displayed
     document.addEventListener('DOMContentLoaded', function() {

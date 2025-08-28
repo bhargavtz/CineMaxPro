@@ -1,0 +1,159 @@
+/* General Body Styles */
+body {
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f0f2f5; /* Light gray background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    color: #333;
+}
+
+/* Form Container Styling */
+.form-signin {
+    width: 100%;
+    max-width: 420px;
+    padding: 30px;
+    margin: auto;
+    background: #ffffff; /* White background for the form */
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.form-signin:hover {
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Heading Styles */
+.form-signin .h3 {
+    font-weight: 600;
+    color: #1a202c; /* Darker heading color */
+    margin-bottom: 25px;
+}
+
+/* Form Floating Labels */
+.form-floating {
+    margin-bottom: 15px;
+}
+
+.form-floating > .form-control,
+.form-floating > .form-control-plaintext {
+    padding: 1rem 0.75rem;
+    height: calc(3.5rem + 2px);
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-floating > label {
+    padding: 1rem 0.75rem;
+    color: #6c757d;
+}
+
+.form-floating > .form-control:focus {
+    border-color: #007bff; /* Primary blue focus color */
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+/* Password Toggle Icon */
+.toggle-password {
+    right: 15px;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.toggle-password i {
+    pointer-events: none; /* Allow clicks to pass through to the input */
+}
+
+/* Checkbox Styling */
+.form-check-input {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+}
+
+.form-check-input:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Button Styling */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.btn-primary:focus {
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.5);
+}
+
+/* Links Styling */
+.link-offset-2 {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+.link-offset-2:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* Alert Messages */
+.alert {
+    border-radius: 8px;
+    font-size: 0.95rem;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .form-signin {
+        padding: 20px;
+        margin: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-signin {
+        padding: 15px;
+        margin: 15px;
+        border-radius: 8px;
+    }
+
+    .form-signin .h3 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    .btn-primary {
+        font-size: 1rem;
+        padding: 8px 15px;
+    }
+}

@@ -8,31 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
+    <!-- Custom Styles -->
+    <link href="assets/style.css" rel="stylesheet">
     <style>
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
         .navbar-brand {
             font-size: 1.5rem;
             font-weight: bold;
-        }
-        .auth-container {
-            max-width: 500px;
-            width: 100%;
-            margin: auto;
-            padding: 30px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .form-signin {
-            width: 100%;
-            max-width: 330px;
-            margin: auto;
-            padding: 15px;
         }
         /* Dark theme navbar */
         .navbar-custom {
@@ -50,8 +31,6 @@
             background-color: #1a1a1a;
             color: #ffffff;
             padding: 20px 0;
-        }
-            margin: auto;
         }
         .form-signin .checkbox {
             font-weight: 400;
