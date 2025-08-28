@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/includes/header.php';
-require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/functions.php'; // Include functions first
+require_once __DIR__ . '/includes/header.php';    // Then include header
 
 // Fetch latest movies
 $latest_movies = $pdo->query("SELECT * FROM movies WHERE release_date <= CURDATE() ORDER BY release_date DESC LIMIT 5")->fetchAll(PDO::FETCH_ASSOC);

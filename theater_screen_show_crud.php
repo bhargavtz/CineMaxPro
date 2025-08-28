@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/includes/header.php';
-require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/functions.php'; // Include functions first
+require_once __DIR__ . '/includes/header.php';    // Then include header
 
 // --- Helper: Store seat layout as JSON ---
 function seatLayoutToJson($rows, $cols, $seat_types) {

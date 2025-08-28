@@ -1,6 +1,6 @@
 <![CDATA[<?php
-require_once __DIR__ . '/includes/header.php';
-require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/functions.php'; // Include functions first
+require_once __DIR__ . '/includes/header.php';    // Then include header
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING); // Added username

@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/includes/header.php';
-require_once __DIR__ . '/includes/functions.php'; // Assuming functions.php will be created next
+require_once __DIR__ . '/includes/functions.php'; // Include functions first
+require_once __DIR__ . '/includes/header.php';    // Then include header
 
 // --- CSRF Token Generation ---
 // Generate a CSRF token if one doesn't exist in the session

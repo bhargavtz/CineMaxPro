@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/includes/header.php';
-require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/functions.php'; // Include functions first
+require_once __DIR__ . '/includes/header.php';    // Then include header
 
 // --- Search & Filter ---
 $search = trim($_GET['search'] ?? '');

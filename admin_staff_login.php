@@ -1,6 +1,7 @@
 <?php
 // Include the header which also includes config.php and starts the session
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/functions.php'; // Include functions first
+require_once __DIR__ . '/includes/header.php';    // Then include header
 
 // --- Login Logic ---
 $login_error = ''; // Variable to store login error messages
