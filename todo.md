@@ -19,5 +19,6 @@
 - [x] Integrate Chart.js for visualization
 - [x] Implement role-based access for reports
 - [x] Add Bootstrap Dark/Light mode toggle for UI
+- [x] Create README.md file
 - [ ] Test all functionalities
 - [ ] Verify results
