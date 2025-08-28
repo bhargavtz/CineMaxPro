@@ -16,14 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $login_error = 'Invalid request. CSRF token mismatch.';
     } else {
         // Sanitize and validate inputs
-        $identifier = filter_input(INPUT_POST, 'identifier', FILTER_SANITIZE_STRING); // Can be email or phone
+    $identifier = filter_input(INPUT_POST, 'identifier', FILTER_SANITIZE_STRING); // Now only email
         $password = $_POST['password'] ?? '';
 
         // --- Input Validation ---
         $errors = [];
 
         if (empty($identifier)) {
-            $errors['identifier'] = 'Please enter your email or phone number.';
+            $errors['identifier'] = 'Please enter your email address.';
         }
         if (empty($password)) {
             $errors['password'] = 'Password is required.';
@@ -32,26 +32,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // --- Database Check and Login ---
         if (empty($errors)) {
             try {
-                // Fetch user by email or phone number
-                $stmt = $pdo->prepare("SELECT user_id, email, phone_number, password_hash, first_name FROM users WHERE email = :identifier OR phone_number = :identifier");
+                // Fetch user by email only
+                $stmt = $pdo->prepare("SELECT user_id, email, password_hash, first_name FROM users WHERE email = :identifier");
                 $stmt->execute([':identifier' => $identifier]);
                 $user = $stmt->fetch();
 
                 if ($user && password_verify($password, $user['password_hash'])) {
                     // Password is correct, log the user in
                     loginUser($user['user_id'], $user['first_name'] ?: $user['email']); // Use first_name or email as display name
-
-                    // Redirect to a dashboard or home page
-                    // For now, let's just show a success message or redirect to signup page for simplicity
-                    // In a real app, you'd redirect to a protected page.
-                    // header("Location: dashboard.php");
-                    // exit();
                     $login_error = 'Login successful! Welcome, ' . htmlspecialchars($user['first_name'] ?: $user['email']) . '.';
-                    // Clear password from POST data to prevent accidental resubmission
+                    unset($_POST['password']);
                     unset($_POST['password']);
                 } else {
                     // Invalid credentials
-                    $login_error = 'Invalid email/phone number or password. Please try again.';
+                    $login_error = 'Invalid email or password. Please try again.';
                 }
             } catch (\PDOException $e) {
                 // Log the error for debugging
@@ -82,8 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
 
         <div class="form-floating">
-            <input type="text" class="form-control <?php echo isset($errors['identifier']) ? 'is-invalid' : ''; ?>" id="identifier" name="identifier" placeholder="Email or Phone Number" value="<?php echo isset($_POST['identifier']) ? htmlspecialchars($_POST['identifier']) : ''; ?>" required autofocus>
-            <label for="identifier">Email or Phone Number</label>
+            <input type="text" class="form-control <?php echo isset($errors['identifier']) ? 'is-invalid' : ''; ?>" id="identifier" name="identifier" placeholder="Email address" value="<?php echo isset($_POST['identifier']) ? htmlspecialchars($_POST['identifier']) : ''; ?>" required autofocus>
+            <label for="identifier">Email address</label>
             <?php if (isset($errors['identifier'])): ?>
                 <div class="invalid-feedback"><?php echo $errors['identifier']; ?></div>
             <?php endif; ?>

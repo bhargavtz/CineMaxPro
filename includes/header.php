@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 // Include database configuration
-require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/../config.php';
 
 // Include utility functions
 require_once __DIR__ . '/functions.php';
@@ -94,5 +94,42 @@ require_once __DIR__ . '/functions.php';
     </style>
 </head>
 <body>
+    <div class="text-end mb-3">
+        <button id="theme-toggle" class="theme-toggle-button">
+            Toggle Theme
+        </button>
+    </div>
     <div class="auth-container">
         <!-- Content will be injected here by specific PHP files -->
+    </div>
+
+    <!-- Theme Toggle Script -->
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const currentTheme = localStorage.getItem('theme');
+
+        const setTheme = (theme) => {
+            body.classList.add(theme);
+            if (theme === 'dark-mode') {
+                themeToggle.textContent = 'Light Mode';
+            } else {
+                themeToggle.textContent = 'Dark Mode';
+            }
+        };
+
+        if (currentTheme) {
+            setTheme(currentTheme);
+        } else {
+            setTheme('light-mode'); // Default to light mode
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const newTheme = body.classList.contains('dark-mode') ? 'dark-mode' : 'light-mode';
+            localStorage.setItem('theme', newTheme);
+            setTheme(newTheme);
+        });
+    </script>
+</body>
+</html>

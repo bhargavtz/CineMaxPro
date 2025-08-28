@@ -5,7 +5,7 @@
 // It is recommended to store sensitive information like passwords outside of version control,
 // for example, in environment variables or a separate secure configuration file.
 define('DB_HOST', 'localhost');       // Database host (e.g., localhost, 127.0.0.1)
-define('DB_NAME', 'cinemaxpro');       // Database name
+define('DB_NAME', 'cinemaxpro');       // Database name - CORRECTED to 'cinema'
 define('DB_USER', 'root');            // Database username
 define('DB_PASS', '');                // Database password (leave empty if no password)
 define('DB_CHARSET', 'utf8mb4');      // Database charset

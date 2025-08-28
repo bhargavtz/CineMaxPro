@@ -6,7 +6,7 @@ CREATE TABLE users (
     password_hash VARCHAR(255) NOT NULL,
     first_name VARCHAR(50),
     last_name VARCHAR(50),
-    phone_number VARCHAR(20),
+    -- phone_number removed
     registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -79,6 +79,8 @@ CREATE TABLE bookings (
     booking_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     total_amount DECIMAL(10, 2) NOT NULL,
     status VARCHAR(50) DEFAULT 'Pending', -- e.g., 'Pending', 'Confirmed', 'Cancelled'
+    cancellation_status VARCHAR(50) DEFAULT NULL, -- e.g., 'pending_cancellation', 'cancelled', 'rejected'
+    refund_status VARCHAR(50) DEFAULT NULL, -- e.g., 'pending_refund', 'refunded', 'refund_failed'
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (show_id) REFERENCES shows(show_id) ON DELETE CASCADE
 );

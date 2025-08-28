@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Sanitize and validate inputs
         $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-        $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING); // Basic sanitization for phone
+    // $phone removed
         $password = $_POST['password'] ?? '';
         $confirm_password = $_POST['confirm_password'] ?? '';
 
@@ -32,16 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors['email'] = 'Please enter a valid email address.';
         }
 
-        // Phone validation (basic check for digits and optional hyphens/spaces)
-        // More robust validation might be needed depending on expected formats
-        if (empty($phone)) {
-            $errors['phone'] = 'Please enter your phone number.';
-        } else {
-            // Example: Allow digits, spaces, hyphens, parentheses
-            if (!preg_match('/^[0-9\s\-()]+$/', $phone)) {
-                $errors['phone'] = 'Please enter a valid phone number.';
-            }
-        }
+    // Phone validation removed
 
         // Password validation
         if (empty($password)) {
@@ -63,18 +54,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($errors)) {
             try {
                 // Check if email or phone already exists
-                $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = :email OR phone_number = :phone");
-                $stmt->execute([':email' => $email, ':phone' => $phone]);
+                $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = :email");
+                $stmt->execute([':email' => $email]);
                 $userExists = $stmt->fetch();
 
                 if ($userExists) {
-                    $signup_error = 'Email or phone number already registered. Please log in or use a different one.';
+                    $signup_error = 'Email already registered. Please log in or use a different one.';
                 } else {
                     // Hash the password
                     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
                     // Prepare and execute the INSERT statement
-                    $stmt = $pdo->prepare("INSERT INTO users (email, phone_number, password_hash, first_name, last_name) VALUES (:email, :phone, :password_hash, :first_name, :last_name)");
+                    $stmt = $pdo->prepare("INSERT INTO users (email, password_hash, first_name, last_name) VALUES (:email, :password_hash, :first_name, :last_name)");
                     
                     // Fetching first_name and last_name from POST, if they exist in the form
                     $first_name = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING) ?: null;
@@ -82,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     $insertSuccess = $stmt->execute([
                         ':email' => $email,
-                        ':phone' => $phone,
                         ':password_hash' => $hashed_password,
                         ':first_name' => $first_name,
                         ':last_name' => $last_name
@@ -148,13 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="invalid-feedback"><?php echo $errors['email']; ?></div>
             <?php endif; ?>
         </div>
-        <div class="form-floating">
-            <input type="tel" class="form-control <?php echo isset($errors['phone']) ? 'is-invalid' : ''; ?>" id="phone" name="phone" placeholder="Phone Number" value="<?php echo isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : ''; ?>">
-            <label for="phone">Phone Number (Optional)</label>
-            <?php if (isset($errors['phone'])): ?>
-                <div class="invalid-feedback"><?php echo $errors['phone']; ?></div>
-            <?php endif; ?>
-        </div>
+    <!-- Phone number field removed -->
 
         <div class="form-floating position-relative">
             <input type="password" class="form-control <?php echo isset($errors['password']) ? 'is-invalid' : ''; ?>" id="password" name="password" placeholder="Password" required>
