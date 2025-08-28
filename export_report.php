@@ -1,19 +1,22 @@
 <?php
-// Include the header which also includes config.php and starts the session
+// First include init.php for session and database setup
+require_once __DIR__ . '/includes/init.php';
+
+// Require staff login before any output
+requireStaffLogin();
+
+// Now include the header (HTML output) - Note: header.php itself should not output HTML if redirects are expected later.
+// For export scripts, we typically don't need the full HTML header.
+// We'll keep it for consistency, but be aware that it might cause issues if not handled carefully.
+// For a pure export script, you might remove this include.
 require_once __DIR__ . '/includes/header.php';
 
-// --- Authentication and Authorization Check ---
-if (!isset($_SESSION['staff_id']) || empty($_SESSION['staff_id'])) {
-    header("Location: admin_staff_login.php");
-    exit();
-}
-
+// --- Authorization Check ---
 $allowed_roles = ['Manager', 'Admin'];
 $current_role = $_SESSION['role'] ?? 'unknown';
 
 if (!in_array($current_role, $allowed_roles)) {
-    header("Location: admin_dashboard.php");
-    exit();
+    redirect('admin_dashboard.php'); // Redirect if not authorized
 }
 
 // --- Export Logic ---

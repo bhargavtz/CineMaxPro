@@ -1,19 +1,19 @@
 <?php
-// Include the header which also includes config.php and starts the session
+// First include init.php for session and database setup
+require_once __DIR__ . '/includes/init.php';
+
+// Require staff login before any output
+requireStaffLogin();
+
+// Now include the header (HTML output)
 require_once __DIR__ . '/includes/header.php';
 
-// --- Authentication and Authorization Check ---
-if (!isset($_SESSION['staff_id']) || empty($_SESSION['staff_id'])) {
-    header("Location: admin_staff_login.php");
-    exit();
-}
-
+// --- Authorization Check ---
 $allowed_roles = ['Manager', 'Admin'];
 $current_role = $_SESSION['role'] ?? 'unknown';
 
 if (!in_array($current_role, $allowed_roles)) {
-    header("Location: admin_dashboard.php");
-    exit();
+    redirect('admin_dashboard.php');
 }
 
 // --- Movie Popularity Report Logic ---

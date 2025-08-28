@@ -4,9 +4,9 @@ require_once 'config.php'; // For database connection
 
 // --- Library Includes ---
 // Attempt to use Dompdf, provide dummy if not found
-$dompdf_class_exists = false; // Flag to track if Dompdf class is available
+$dompdf_class_exists = class_exists('Dompdf\Dompdf'); // Flag to track if Dompdf class is available
 
-if (!class_exists('Dompdf\Dompdf')) {
+if (!$dompdf_class_exists) {
     // Dummy Dompdf class if not installed
     class Dompdf {
         public function __construct() {}
@@ -16,10 +16,6 @@ if (!class_exists('Dompdf\Dompdf')) {
         public function stream($filename, $options = []) {}
     }
     echo "<p style='color:red;'>Warning: Dompdf library not found. PDF generation will be simulated.</p>";
-} else {
-    // Use actual Dompdf class
-    use Dompdf\Dompdf;
-    $dompdf_class_exists = true;
 }
 
 // Handle PHP QR Code library
@@ -93,9 +89,8 @@ if ($booking_id > 0) {
 
 // --- PDF Generation ---
 if ($ticket_data) {
-    // Instantiate Dompdf
-    // Use the correct class name based on whether the library is available
-    $dompdf = $dompdf_class_exists ? new Dompdf() : new Dompdf();
+    // Instantiate Dompdf (either the real one or the dummy one)
+    $dompdf = $dompdf_class_exists ? new \Dompdf\Dompdf() : new Dompdf();
 
     // HTML content for the ticket
     $html = '

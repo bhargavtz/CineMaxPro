@@ -1,13 +1,12 @@
 <?php
-// Include the header which also includes config.php and starts the session
-require_once __DIR__ . '/includes/header.php';
+// First include init.php for session and database setup
+require_once __DIR__ . '/includes/init.php';
 
-// --- Authentication Check ---
-// Check if the user is logged in. If not, redirect to the login page.
-if (!isset($_SESSION['staff_id']) || empty($_SESSION['staff_id'])) {
-    header("Location: admin_staff_login.php");
-    exit();
-}
+// Require staff login before any output
+requireStaffLogin();
+
+// Now include the header (HTML output)
+require_once __DIR__ . '/includes/header.php';
 
 // Get staff details from session
 $username = $_SESSION['username'] ?? 'Guest';

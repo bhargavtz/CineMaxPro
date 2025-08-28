@@ -20,5 +20,7 @@
 - [x] Implement role-based access for reports
 - [x] Add Bootstrap Dark/Light mode toggle for UI
 - [x] Create README.md file
+- [x] Fix "headers already sent" error
+- [x] Enhance index.php with Tailwind CSS
 - [ ] Test all functionalities
 - [ ] Verify results

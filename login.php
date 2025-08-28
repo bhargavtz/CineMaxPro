@@ -1,6 +1,5 @@
 <?php
-require_once __DIR__ . '/includes/functions.php'; // Include functions first
-require_once __DIR__ . '/includes/header.php';    // Then include header
+require_once __DIR__ . '/includes/init.php';
 
 // --- CSRF Token Generation ---
 if (empty($_SESSION['csrf_token'])) {

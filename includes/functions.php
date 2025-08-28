@@ -131,6 +131,16 @@ function logoutUser() {
     session_destroy();
 }
 
+/**
+ * Check if a staff member is logged in. If not, redirect to the staff login page.
+ * Assumes staff ID is stored in $_SESSION['staff_id'].
+ */
+function requireStaffLogin() {
+    if (!isset($_SESSION['staff_id']) || empty($_SESSION['staff_id'])) {
+        redirect('admin_staff_login.php');
+    }
+}
+
 // --- Password Reset Functionality ---
 
 /**
