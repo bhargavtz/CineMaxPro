@@ -22,18 +22,21 @@ require_once __DIR__ . '/functions.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cinema Authentication</title>
+    <title>CineMaxPro - Your Ultimate Movie Experience</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS (optional) -->
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
     <style>
         body {
-            background-color: #f8f9fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            padding-top: 60px; /* For fixed navbar if any */
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
         }
         .auth-container {
             max-width: 500px;
@@ -47,7 +50,26 @@ require_once __DIR__ . '/functions.php';
         .form-signin {
             width: 100%;
             max-width: 330px;
+            margin: auto;
             padding: 15px;
+        }
+        /* Dark theme navbar */
+        .navbar-custom {
+            background-color: #1a1a1a;
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: #ffffff;
+        }
+        .navbar-custom .nav-link:hover {
+            color: #ffc107;
+        }
+        footer {
+            margin-top: auto;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            padding: 20px 0;
+        }
             margin: auto;
         }
         .form-signin .checkbox {
@@ -94,6 +116,54 @@ require_once __DIR__ . '/functions.php';
     </style>
 </head>
 <body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.php">CineMaxPro</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="movies_user_view.php">Movies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#aboutus">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <?php if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || strpos($_SESSION['role'], 'staff') !== false)): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="admin_dashboard.php">Dashboard</a>
+                            </li>
+                        <?php endif; ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.php">My Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="logout.php">Logout</a>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.php">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="signup.php">Sign Up</a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="content-wrapper" style="margin-top: 80px;">
     <div class="text-end mb-3">
         <button id="theme-toggle" class="theme-toggle-button">
             Toggle Theme
