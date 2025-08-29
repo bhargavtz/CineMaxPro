@@ -20,6 +20,6 @@ if (ini_get("session.use_cookies")) {
 session_destroy();
 
 // Redirect to the login page after logout
-header("Location: admin_staff_login.php?message=logged_out");
+header("Location: login.php?message=logged_out");
 exit();
 ?>

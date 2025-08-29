@@ -39,10 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if ($user && password_verify($password, $user['password_hash'])) {
                     // Password is correct, log the user in
-                    loginUser($user['user_id'], $user['first_name'] ?: $user['email']); // Use first_name or email as display name
+                    loginUser($user['user_id'], $user['first_name'] ?: $user['email']);
+                    $_SESSION['user_role'] = 'user'; // Set a role for regular users
                     $login_error = 'Login successful! Welcome, ' . htmlspecialchars($user['first_name'] ?: $user['email']) . '.';
                     unset($_POST['password']);
-                    unset($_POST['password']);
+                    header("Location: index.php"); // Redirect to home page after successful login
+                    exit();
                 } else {
                     // Invalid credentials
                     $login_error = 'Invalid email or password. Please try again.';

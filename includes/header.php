@@ -100,7 +100,7 @@
                 </ul>
                 <ul class="navbar-nav">
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <?php if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || strpos($_SESSION['role'], 'staff') !== false)): ?>
+                        <?php if (isset($_SESSION['user_role']) && ($_SESSION['user_role'] === 'admin' || strpos($_SESSION['user_role'], 'staff') !== false)): ?>
                             <li class="nav-item">
                                 <a class="nav-link" href="admin_dashboard.php">Dashboard</a>
                             </li>

@@ -38,6 +38,7 @@ switch ($staff_position) {
         break;
     case 'Admin': // Assuming 'Admin' is a possible position value
         $nav_links['Manage Staff'] = 'manage_staff.php'; // Assuming this file will be created
+        $nav_links['Manage Users'] = 'admin_users.php'; // New link for user management
         $nav_links['View All Bookings'] = 'admin_bookings.php'; // Assuming this file will be created
         $nav_links['View All Refunds'] = 'admin_refunds.php'; // Assuming this file will be created
         $nav_links['Verify Tickets'] = 'verify_ticket.php'; // Assuming this file will be created

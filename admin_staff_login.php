@@ -1,7 +1,10 @@
 <?php
-// Include the header which also includes config.php and starts the session
-require_once __DIR__ . '/includes/functions.php'; // Include functions first
-require_once __DIR__ . '/includes/header.php';    // Then include header
+// Include config.php first to establish PDO connection
+require_once __DIR__ . '/config.php';
+// Then include functions.php which depends on the PDO connection
+require_once __DIR__ . '/includes/functions.php';
+// Now include the header (HTML output)
+require_once __DIR__ . '/includes/header.php';
 
 // --- Login Logic ---
 $login_error = ''; // Variable to store login error messages
@@ -26,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 session_regenerate_id(true); // Regenerate session ID for security
                 $_SESSION['staff_id'] = $staff_data['staff_id']; // Get staff_id from staff table
                 $_SESSION['username'] = $staff_data['username']; // Get username from users table
-                $_SESSION['role'] = $staff_data['position']; // Use 'position' from staff table as role
+                $_SESSION['user_role'] = $staff_data['position']; // Use 'position' from staff table as role
 
                 // Redirect to the admin dashboard
                 header("Location: admin_dashboard.php");

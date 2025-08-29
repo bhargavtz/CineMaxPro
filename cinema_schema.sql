@@ -135,10 +135,10 @@ ADD FOREIGN KEY (coupon_id) REFERENCES coupons(coupon_id) ON DELETE SET NULL;
 -- Sample Data --
 
 -- Users
-INSERT INTO users (username, email, password_hash, first_name, last_name, phone_number) VALUES
-('john_doe', 'john.doe@example.com', 'hashed_password_1', 'John', 'Doe', '123-456-7890'),
-('jane_smith', 'jane.smith@example.com', 'hashed_password_2', 'Jane', 'Smith', '987-654-3210'),
-('admin_user', 'admin@example.com', 'hashed_admin_password', 'Admin', 'User', '111-222-3333');
+INSERT INTO users (username, email, password_hash, first_name, last_name) VALUES
+('john_doe', 'john.doe@example.com', 'hashed_password_1', 'John', 'Doe'),
+('jane_smith', 'jane.smith@example.com', 'hashed_password_2', 'Jane', 'Smith'),
+('admin_user', 'admin@example.com', 'hashed_admin_password', 'Admin', 'User');
 
 -- Staff
 INSERT INTO staff (user_id, hire_date, position, salary) VALUES

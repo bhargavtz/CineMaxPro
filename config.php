@@ -5,7 +5,7 @@
 // It is recommended to store sensitive information like passwords outside of version control,
 // for example, in environment variables or a separate secure configuration file.
 define('DB_HOST', 'localhost');       // Database host (e.g., localhost, 127.0.0.1)
-define('DB_NAME', 'cinemaxpro');       // Database name - CORRECTED to 'cinema'
+define('DB_NAME', 'cinema');       // Database name - CORRECTED to 'cinema'
 define('DB_USER', 'root');            // Database username
 define('DB_PASS', '');                // Database password (leave empty if no password)
 define('DB_CHARSET', 'utf8mb4');      // Database charset
@@ -36,12 +36,6 @@ try {
     die("A database connection error occurred. Please try again later.");
 }
 
-// --- Session Start ---
-// Start the session to enable session variables.
-// This should be called before any output is sent to the browser.
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
 // --- Reusable Functions/Classes (Optional but recommended for complex apps) ---
 // For a simple config file, the PDO object $pdo is directly available.
