@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/includes/functions.php'; // Include functions first
+require_once __DIR__ . '/config.php'; // Include config.php for database connection
+require_once __DIR__ . '/includes/init.php'; // Include init.php for database connection and functions
 
 // --- Search & Filter ---
 $search = trim($_GET['search'] ?? '');
@@ -42,83 +43,129 @@ if (isset($_GET['show_id'])) {
     $seat_layout = json_decode($stmt->fetchColumn(), true) ?? [];
 }
 ?>
-<div class="container py-4">
-    <h2 class="mb-4">Now Showing</h2>
-    <form method="GET" class="row g-2 mb-4">
-        <div class="col-md-4"><input type="text" name="search" class="form-control" placeholder="Search by title" value="<?= htmlspecialchars($search) ?>"></div>
-        <div class="col-md-3">
-            <select name="genre" class="form-select"><option value="">Genre</option><?php foreach ($genres as $g): ?><option value="<?= htmlspecialchars($g) ?>" <?= $genre==$g?'selected':'' ?>><?= htmlspecialchars($g) ?></option><?php endforeach; ?></select>
+<?php require_once __DIR__ . '/includes/header.php'; ?>
+<div class="container mx-auto px-4 py-16 mt-16">
+    <h2 class="text-5xl font-extrabold text-center mb-12 text-red-500">Now Showing</h2>
+    <form method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8 items-end">
+        <div class="md:col-span-2">
+            <label for="search" class="block text-gray-400 text-sm font-bold mb-2">Search by title</label>
+            <input type="text" name="search" id="search" class="shadow appearance-none border border-gray-700 rounded w-full py-3 px-4 bg-gray-800 text-white leading-tight focus:outline-none focus:shadow-outline focus:border-red-500" placeholder="Search by title" value="<?= htmlspecialchars($search) ?>">
         </div>
-        <div class="col-md-3">
-            <select name="language" class="form-select"><option value="">Language</option><?php foreach ($languages as $l): ?><option value="<?= htmlspecialchars($l) ?>" <?= $language==$l?'selected':'' ?>><?= htmlspecialchars($l) ?></option><?php endforeach; ?></select>
+        <div>
+            <label for="genre" class="block text-gray-400 text-sm font-bold mb-2">Genre</label>
+            <select name="genre" id="genre" class="shadow appearance-none border border-gray-700 rounded w-full py-3 px-4 bg-gray-800 text-white leading-tight focus:outline-none focus:shadow-outline focus:border-red-500">
+                <option value="">All Genres</option>
+                <?php foreach ($genres as $g): ?>
+                    <option value="<?= htmlspecialchars($g) ?>" <?= $genre==$g?'selected':'' ?>><?= htmlspecialchars($g) ?></option>
+                <?php endforeach; ?>
+            </select>
         </div>
-        <div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Search</button></div>
+        <div>
+            <label for="language" class="block text-gray-400 text-sm font-bold mb-2">Language</label>
+            <select name="language" id="language" class="shadow appearance-none border border-gray-700 rounded w-full py-3 px-4 bg-gray-800 text-white leading-tight focus:outline-none focus:shadow-outline focus:border-red-500">
+                <option value="">All Languages</option>
+                <?php foreach ($languages as $l): ?>
+                    <option value="<?= htmlspecialchars($l) ?>" <?= $language==$l?'selected':'' ?>><?= htmlspecialchars($l) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div>
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 w-full">Search</button>
+        </div>
     </form>
-    <div class="row g-3 mb-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
         <?php foreach ($now_movies as $mv): ?>
-        <div class="col-md-3">
-            <div class="card h-100">
-                <?php if (!empty($mv['poster'])): ?><img src="<?= $mv['poster'] ?>" class="card-img-top" alt="Poster"><?php endif; ?>
-                <div class="card-body">
-                    <h5 class="card-title"><?= sanitize_string($mv['title']) ?></h5>
-                    <p class="card-text">Genre: <?= sanitize_string($mv['genre']) ?><br>Language: <?= sanitize_string($mv['language']) ?></p>
-                    <a href="?movie_id=<?= $mv['movie_id'] ?>" class="btn btn-outline-primary">View Details</a>
-                </div>
+        <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition duration-300 border border-gray-700">
+            <?php if (!empty($mv['poster_path'])): ?>
+                <img src="uploads/posters/<?= htmlspecialchars($mv['poster_path']) ?>" class="w-full h-72 object-cover" alt="Poster">
+            <?php else: ?>
+                <div class="w-full h-72 bg-gray-700 flex items-center justify-center text-gray-400 text-xl font-semibold">No Poster</div>
+            <?php endif; ?>
+            <div class="p-6">
+                <h5 class="text-2xl font-bold mb-2 text-white"><?= sanitize_string($mv['title']) ?></h5>
+                <p class="text-gray-400 text-sm mb-4">Genre: <?= sanitize_string($mv['genre']) ?><br>Language: <?= sanitize_string($mv['language']) ?></p>
+                <a href="?movie_id=<?= $mv['movie_id'] ?>" class="block w-full bg-red-600 hover:bg-red-700 text-white text-center font-bold py-3 px-4 rounded-lg transition duration-300">View Details</a>
             </div>
         </div>
         <?php endforeach; ?>
     </div>
-    <h2 class="mb-4">Upcoming Movies</h2>
-    <div class="row g-3 mb-5">
+    <h2 class="text-5xl font-extrabold text-center mb-12 text-red-500">Upcoming Movies</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
         <?php foreach ($upcoming_movies as $mv): ?>
-        <div class="col-md-3">
-            <div class="card h-100">
-                <?php if (!empty($mv['poster'])): ?><img src="<?= $mv['poster'] ?>" class="card-img-top" alt="Poster"><?php endif; ?>
-                <div class="card-body">
-                    <h5 class="card-title"><?= sanitize_string($mv['title']) ?></h5>
-                    <p class="card-text">Genre: <?= sanitize_string($mv['genre']) ?><br>Language: <?= sanitize_string($mv['language']) ?></p>
-                    <a href="?movie_id=<?= $mv['movie_id'] ?>" class="btn btn-outline-primary">View Details</a>
-                </div>
+        <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition duration-300 border border-gray-700">
+            <?php if (!empty($mv['poster_path'])): ?>
+                <img src="uploads/posters/<?= htmlspecialchars($mv['poster_path']) ?>" class="w-full h-72 object-cover" alt="Poster">
+            <?php else: ?>
+                <div class="w-full h-72 bg-gray-700 flex items-center justify-center text-gray-400 text-xl font-semibold">No Poster</div>
+            <?php endif; ?>
+            <div class="p-6">
+                <h5 class="text-2xl font-bold mb-2 text-white"><?= sanitize_string($mv['title']) ?></h5>
+                <p class="text-gray-400 text-sm mb-4">Genre: <?= sanitize_string($mv['genre']) ?><br>Language: <?= sanitize_string($mv['language']) ?></p>
+                <a href="?movie_id=<?= $mv['movie_id'] ?>" class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center font-bold py-3 px-4 rounded-lg transition duration-300">View Details</a>
             </div>
         </div>
         <?php endforeach; ?>
     </div>
     <?php if ($selected_movie): ?>
-        <h2 class="mb-4">Movie Details</h2>
-        <div class="card mb-4">
-            <div class="row g-0">
-                <div class="col-md-3">
-                    <?php if (!empty($selected_movie['poster'])): ?><img src="<?= $selected_movie['poster'] ?>" class="img-fluid rounded-start" alt="Poster"><?php endif; ?>
+        <h2 class="text-5xl font-extrabold text-center mb-12 text-red-500">Movie Details</h2>
+        <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden mb-16 border border-gray-700">
+            <div class="md:flex">
+                <div class="md:flex-shrink-0">
+                    <?php if (!empty($selected_movie['poster_path'])): ?>
+                        <img src="uploads/posters/<?= htmlspecialchars($selected_movie['poster_path']) ?>" class="w-full h-96 object-cover md:w-72" alt="Poster">
+                    <?php else: ?>
+                        <div class="w-full h-96 bg-gray-700 flex items-center justify-center text-gray-400 text-xl font-semibold md:w-72">No Poster</div>
+                    <?php endif; ?>
                 </div>
-                <div class="col-md-9">
-                    <div class="card-body">
-                        <h5 class="card-title"><?= sanitize_string($selected_movie['title']) ?></h5>
-                        <p class="card-text">Genre: <?= sanitize_string($selected_movie['genre']) ?><br>Language: <?= sanitize_string($selected_movie['language']) ?><br>Cast: <?= sanitize_string($selected_movie['cast']) ?><br>Age Rating: <?= sanitize_string($selected_movie['age_rating']) ?><br>Description: <?= sanitize_string($selected_movie['description']) ?></p>
-                        <?php if (!empty($selected_movie['trailer_link'])): ?><a href="<?= $selected_movie['trailer_link'] ?>" target="_blank" class="btn btn-info">Watch Trailer</a><?php endif; ?>
-                    </div>
+                <div class="p-8">
+                    <h5 class="text-4xl font-bold mb-4 text-white"><?= sanitize_string($selected_movie['title']) ?></h5>
+                    <p class="text-gray-400 text-lg mb-2"><strong>Genre:</strong> <?= sanitize_string($selected_movie['genre']) ?></p>
+                    <p class="text-gray-400 text-lg mb-2"><strong>Language:</strong> <?= sanitize_string($selected_movie['language']) ?></p>
+                    <p class="text-gray-400 text-lg mb-2"><strong>Cast:</strong> <?= sanitize_string($selected_movie['cast']) ?></p>
+                    <p class="text-gray-400 text-lg mb-2"><strong>Age Rating:</strong> <?= sanitize_string($selected_movie['age_rating']) ?></p>
+                    <p class="text-gray-400 text-lg mb-4"><strong>Description:</strong> <?= sanitize_string($selected_movie['description']) ?></p>
+                    <?php if (!empty($selected_movie['trailer_link'])): ?>
+                        <a href="<?= $selected_movie['trailer_link'] ?>" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 inline-block">Watch Trailer</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
-        <h3 class="mb-3">Available Shows</h3>
-        <table class="table table-bordered mb-4"><thead><tr><th>Theater</th><th>Screen</th><th>Start</th><th>End</th><th>Price</th><th>Book</th></tr></thead><tbody>
-            <?php foreach ($shows as $sh): ?>
-            <tr>
-                <td><?= htmlspecialchars($sh['theater_name']) ?></td>
-                <td><?= $sh['screen_number'] ?></td>
-                <td><?= $sh['start_time'] ?></td>
-                <td><?= $sh['end_time'] ?></td>
-                <td>₹<?= $sh['price'] ?></td>
-                <td><a href="?movie_id=<?= $selected_movie['movie_id'] ?>&show_id=<?= $sh['show_id'] ?>" class="btn btn-success btn-sm">Select Seats</a></td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody></table>
+        <h3 class="text-4xl font-extrabold text-center mb-8 text-red-500">Available Shows</h3>
+        <div class="overflow-x-auto bg-gray-800 rounded-xl shadow-lg border border-gray-700 mb-16">
+            <table class="min-w-full divide-y divide-gray-700">
+                <thead class="bg-gray-700">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Theater</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Screen</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Start</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">End</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Price</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Book</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700">
+                    <?php foreach ($shows as $sh): ?>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-300"><?= htmlspecialchars($sh['theater_name']) ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-300"><?= $sh['screen_number'] ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-300"><?= $sh['start_time'] ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-300"><?= $sh['end_time'] ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-300">₹<?= $sh['price'] ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <a href="?movie_id=<?= $selected_movie['movie_id'] ?>&show_id=<?= $sh['show_id'] ?>" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 text-sm">Select Seats</a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     <?php endif; ?>
     <?php if ($seat_layout): ?>
-        <h3 class="mb-3">Select Your Seats</h3>
-        <form method="POST" action="book_seats.php">
+        <h3 class="text-4xl font-extrabold text-center mb-8 text-red-500">Select Your Seats</h3>
+        <form method="POST" action="book_seats.php" class="bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700 mb-16">
             <input type="hidden" name="show_id" value="<?= intval($_GET['show_id']) ?>">
-            <div class="mb-3">
-                <div class="d-flex flex-column gap-2">
+            <div class="mb-6">
+                <div class="flex flex-col gap-4">
                     <?php
                     $row_labels = [];
                     foreach ($seat_layout as $seat => $type) {
@@ -127,19 +174,21 @@ if (isset($_GET['show_id'])) {
                         $row_labels[$row][] = [$seat, $type];
                     }
                     foreach ($row_labels as $row => $seats): ?>
-                        <div class="d-flex align-items-center mb-1">
-                            <span class="me-2 fw-bold">Row <?= $row ?>:</span>
-                            <?php foreach ($seats as [$seat, $type]): ?>
-                                <label class="me-1">
-                                    <input type="checkbox" name="seats[]" value="<?= $seat ?>">
-                                    <span class="badge bg-<?= $type=='VIP'?'warning':'secondary' ?>"> <?= $seat ?> (<?= $type ?>) </span>
-                                </label>
-                            <?php endforeach; ?>
+                        <div class="flex items-center mb-2">
+                            <span class="mr-4 font-bold text-white text-xl">Row <?= $row ?>:</span>
+                            <div class="flex flex-wrap gap-2">
+                                <?php foreach ($seats as [$seat, $type]): ?>
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" name="seats[]" value="<?= $seat ?>" class="form-checkbox h-5 w-5 text-red-600 bg-gray-700 border-gray-600 rounded focus:ring-red-500">
+                                        <span class="ml-2 text-lg font-medium <?= $type=='VIP'?'text-yellow-400':'text-gray-300' ?>"> <?= $seat ?> (<?= $type ?>) </span>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Book Selected Seats</button>
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300 w-full">Book Selected Seats</button>
         </form>
     <?php endif; ?>
 </div>

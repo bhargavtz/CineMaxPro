@@ -1,43 +1,87 @@
-<![CDATA[<?php
-require_once __DIR__ . '/includes/functions.php'; // Include functions first
-require_once __DIR__ . '/includes/header.php';    // Then include header
+<?php
+require_once __DIR__ . '/includes/init.php';
+require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/header.php';
+
+// Set page title
+$pageTitle = "Create Admin Account";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING); // Added username
+    $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'] ?? '';
-    $admin_level = $_POST['admin_level'] ?? 'SuperAdmin';
 
     // Hash password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
     try {
+        // Start transaction
+        $pdo->beginTransaction();
+
         // Insert into users table
-        $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password_hash)"); // Added username to INSERT
-        $stmt->execute([':username' => $username, ':email' => $email, ':password_hash' => $hashed_password]); // Added username to execute
+        $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password_hash)");
+        $stmt->execute([
+            ':username' => $username, 
+            ':email' => $email, 
+            ':password_hash' => $hashed_password
+        ]);
         $user_id = $pdo->lastInsertId();
 
-        // Insert into admins table
-        $stmt = $pdo->prepare("INSERT INTO admins (user_id, admin_level) VALUES (:user_id, :admin_level)");
-        $stmt->execute([':user_id' => $user_id, ':admin_level' => $admin_level]);
+        // Insert into staff table with Admin role
+        $stmt = $pdo->prepare("INSERT INTO staff (user_id, role, hire_date) VALUES (:user_id, 'Admin', CURRENT_DATE)");
+        $stmt->execute([':user_id' => $user_id]);
 
-        echo "Admin account created successfully!";
+        // Commit transaction
+        $pdo->commit();
+        
+        echo '<div class="alert alert-success" role="alert">
+                Admin account created successfully!
+              </div>';
     } catch (PDOException $e) {
-        // Check for duplicate entry error specifically for username
+        // Rollback transaction
+        $pdo->rollBack();
+        
         if ($e->getCode() == 23000 && strpos($e->getMessage(), "username") !== false) {
-            echo "Error: Username already exists. Please choose a different username.";
+            echo '<div class="alert alert-danger" role="alert">
+                    Username already exists. Please choose a different username.
+                  </div>';
         } else {
-            echo "Error: " . $e->getMessage();
+            echo '<div class="alert alert-danger" role="alert">
+                    Error: ' . htmlspecialchars($e->getMessage()) . '
+                  </div>';
         }
     }
 }
 ?>
 
-<form method="POST">
-    <input type="text" name="username" placeholder="Username" required>
-    <input type="email" name="email" placeholder="Admin Email" required>
-    <input type="password" name="password" placeholder="Password" required>
-    <input type="text" name="admin_level" placeholder="Admin Level (e.g. SuperAdmin)" required>
-    <button type="submit">Create Admin</button>
-</form>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="text-center mb-0">Create Admin Account</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" class="needs-validation" novalidate>
+                        <div class="form-group mb-3">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Create Admin Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>
 ]]>

@@ -1,82 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo htmlspecialchars($pageTitle); ?></title>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100">
 <?php
-// First include init.php for session and database setup
 require_once __DIR__ . '/includes/init.php';
+require_once __DIR__ . '/includes/functions.php';
 
 // Require staff login before any output
 requireStaffLogin();
 
-// Now include the header (HTML output)
-require_once __DIR__ . '/includes/header.php';
-
 // Get staff details from session
-$username = $_SESSION['username'] ?? 'Guest';
-// Use the 'position' from the staff table as the role for the dashboard
-$role_display = $_SESSION['role'] ?? 'unknown'; // For display purposes
-
-// --- Role-based Navigation ---
-// Define navigation links based on the actual staff position
-$nav_links = [];
-
-// All staff roles can see basic info and potentially their own profile
-$nav_links['Profile'] = '#'; // Placeholder for profile link
-
-// Map staff positions to dashboard roles and define navigation links
-// Adjust these mappings based on actual 'position' values in your staff table
-$staff_position = $_SESSION['role']; // This is the actual position from the DB
-
-switch ($staff_position) {
-    case 'Manager': // Matches the 'position' value from staff table
-        $nav_links['View Bookings'] = 'admin_bookings.php'; // Assuming this file will be created
-        $nav_links['View Refunds'] = 'admin_refunds.php'; // Assuming this file will be created
-        $nav_links['Verify Tickets'] = 'verify_ticket.php'; // Assuming this file will be created
-        break;
-    case 'Usher': // Matches the 'position' value from staff table
-        // Ushers might have limited access, e.g., only ticket verification
-        $nav_links['Verify Tickets'] = 'verify_ticket.php';
-        // Optionally, they might view bookings but not manage them
-        // $nav_links['View Bookings'] = 'admin_bookings.php';
-        break;
-    case 'Admin': // Assuming 'Admin' is a possible position value
-        $nav_links['Manage Staff'] = 'manage_staff.php'; // Assuming this file will be created
-        $nav_links['Manage Users'] = 'admin_users.php'; // New link for user management
-        $nav_links['View All Bookings'] = 'admin_bookings.php'; // Assuming this file will be created
-        $nav_links['View All Refunds'] = 'admin_refunds.php'; // Assuming this file will be created
-        $nav_links['Verify Tickets'] = 'verify_ticket.php'; // Assuming this file will be created
-        break;
-    // Add other roles/positions as needed, e.g., 'Support', 'Cashier'
-    // case 'Support':
-    //     $nav_links['View Refunds'] = 'admin_refunds.php';
-    //     $nav_links['Manage Bookings'] = 'admin_bookings.php';
-    //     break;
-    default:
-        // Handle unknown positions or provide a generic dashboard
-        // For example, if a position is not explicitly handled, show a message or limited options.
-        break;
+$staff_id = $_SESSION['staff_id'] ?? null;
+if (!$staff_id) {
+    header('Location: admin_login.php');
+    exit;
 }
 
+// Fetch staff details from database
+try {
+    $stmt = $pdo->prepare("
+        SELECT s.*, u.username, u.email 
+        FROM staff s 
+        JOIN users u ON s.user_id = u.user_id 
+        WHERE s.staff_id = ?
+    ");
+    $stmt->execute([$staff_id]);
+    $staff = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$staff) {
+        header('Location: admin_login.php');
+        exit;
+    }
+    
+    $username = $staff['username'];
+    $role = $staff['role'];
+} catch (PDOException $e) {
+    error_log($e->getMessage());
+    $username = 'Unknown';
+    $role = 'Staff';
+}
+
+// Temporarily force role to 'Admin' for testing purposes
+$role = 'Admin';
+
+$pageTitle = "Admin Dashboard";
+// require_once __DIR__ . '/includes/header.php'; // Removed to avoid conflicting styles
+
+// Define navigation links based on role
+$nav_links = [];
+
+// Common links for all staff
+$nav_links['View Bookings'] = 'admin_bookings.php';
+
+// Role-specific links
+if ($role === 'Admin') {
+    $nav_links['Manage Movies'] = 'movies_crud.php';
+    $nav_links['Manage Shows'] = 'theater_screen_show_crud.php';
+    $nav_links['Manage Users'] = 'admin_users.php';
+    $nav_links['View Reports'] = 'admin_reports.php';
+    $nav_links['Handle Refunds'] = 'admin_refunds.php';
+    $nav_links['Manage Cancellations'] = 'admin_cancellations.php';
+    $nav_links['Verify Tickets'] = 'verify_ticket.php';
+} elseif ($role === 'Manager') {
+    $nav_links['Manage Movies'] = 'movies_crud.php';
+    $nav_links['Manage Shows'] = 'theater_screen_show_crud.php';
+    $nav_links['View Reports'] = 'admin_reports.php';
+}
 ?>
 
-<!-- Dashboard Content -->
-<div class="auth-container">
-    <h2 class="text-center mb-4">Welcome, <?php echo htmlspecialchars($username); ?>!</h2>
-    <p class="text-center mb-4">Your role: <?php echo htmlspecialchars($role_display); ?></p>
+<div class="min-h-screen bg-gray-100">
+    <!-- Top Navigation Bar -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-semibold text-gray-800">CineMaxPro Admin</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-600">Welcome, <?php echo htmlspecialchars($username); ?>! Your role: <?php echo htmlspecialchars($role); ?></span>
+                    <a href="logout.php" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-    <div class="list-group">
-        <?php foreach ($nav_links as $text => $href): ?>
-            <?php if (!empty($href)): // Only display links that are defined ?>
-                <a href="<?php echo htmlspecialchars($href); ?>" class="list-group-item list-group-item-action">
-                    <?php echo htmlspecialchars($text); ?>
-                </a>
-            <?php endif; ?>
-        <?php endforeach; ?>
-    </div>
-
-    <div class="text-center mt-4">
-        <a href="logout.php" class="btn btn-danger">Logout</a>
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Dashboard Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <?php foreach ($nav_links as $title => $link): ?>
+            <div class="bg-white overflow-hidden shadow-sm rounded-lg">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <?php 
+                            $icon = 'calendar';
+                            if (strpos($title, 'Movies') !== false) $icon = 'film';
+                            elseif (strpos($title, 'Shows') !== false) $icon = 'tv';
+                            elseif (strpos($title, 'Users') !== false) $icon = 'users';
+                            elseif (strpos($title, 'Reports') !== false) $icon = 'chart-bar';
+                            elseif (strpos($title, 'Refunds') !== false) $icon = 'money-bill';
+                            ?>
+                            <i class="fas fa-<?php echo $icon; ?> text-2xl text-blue-500"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-medium text-gray-900"><?php echo htmlspecialchars($title); ?></h3>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <a href="<?php echo htmlspecialchars($link); ?>" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Manage
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
     </div>
 </div>
 
-<?php
-// Include the footer (if you have one, otherwise this part can be omitted or adjusted)
-// require_once __DIR__ . '/includes/footer.php';
-?>
+<footer class="bg-gray-800 text-white py-4 mt-8">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <p>&copy; <?php echo date('Y'); ?> CineMaxPro. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>

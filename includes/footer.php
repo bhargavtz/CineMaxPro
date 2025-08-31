@@ -1,45 +1,40 @@
-    </div> <!-- /.content-wrapper -->
-
     <!-- Footer -->
-    <footer class="mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>About CineMaxPro</h5>
-                    <p>Your gateway to movie magic! Experience the latest blockbusters in ultimate comfort with state-of-the-art technology.</p>
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h5 class="text-xl font-bold mb-4">About CineMaxPro</h5>
+                    <p class="text-gray-400">Your gateway to movie magic! Experience the latest blockbusters in ultimate comfort with state-of-the-art technology.</p>
                 </div>
-                <div class="col-md-4">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="movies_user_view.php" class="text-white">Now Showing</a></li>
-                        <li><a href="movies_user_view.php" class="text-white">Coming Soon</a></li>
-                        <li><a href="#" class="text-white">Promotions</a></li>
-                        <li><a href="#" class="text-white">Gift Cards</a></li>
+                <div>
+                    <h5 class="text-xl font-bold mb-4">Quick Links</h5>
+                    <ul class="space-y-2">
+                        <li><a href="movies_user_view.php" class="text-gray-400 hover:text-white transition duration-300">Now Showing</a></li>
+                        <li><a href="movies_user_view.php" class="text-gray-400 hover:text-white transition duration-300">Coming Soon</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Promotions</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Gift Cards</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4">
-                    <h5>Contact Us</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-phone me-2"></i> +1 234 567 8900</li>
-                        <li><i class="fas fa-envelope me-2"></i> info@cinemaxpro.com</li>
-                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Movie Street, Cinema City</li>
+                <div>
+                    <h5 class="text-xl font-bold mb-4">Contact Us</h5>
+                    <ul class="space-y-2">
+                        <li><i class="fas fa-phone mr-2"></i> +1 234 567 8900</li>
+                        <li><i class="fas fa-envelope mr-2"></i> info@cinemaxpro.com</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i> 123 Movie Street, Cinema City</li>
                     </ul>
-                    <div class="social-icons mt-3">
-                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                    <div class="social-icons mt-4 flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
             </div>
-            <hr class="mt-4" style="background-color: #ffffff;">
-            <div class="text-center">
+            <hr class="my-8 border-gray-700">
+            <div class="text-center text-gray-500">
                 <p>&copy; <?php echo date('Y'); ?> CineMaxPro. All rights reserved.</p>
             </div>
         </div>
     </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Add any custom JavaScript here
         document.addEventListener('DOMContentLoaded', function() {
@@ -59,5 +54,3 @@
             }
         });
     </script>
-</body>
-</html>

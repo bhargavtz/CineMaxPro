@@ -7,7 +7,7 @@
 define('DB_HOST', 'localhost');     // Database host (usually localhost)
 define('DB_NAME', 'CineMaxPro');   // Your database name
 define('DB_USER', 'root');         // Default XAMPP username
-define('DB_PASS', '');             // Default XAMPP has no password
+define('DB_PASS', '');             // Default XAMPP has no password (confirmed by user)
 define('DB_CHARSET', 'utf8mb4');   // Standard charset
 
 // --- PDO Connection ---
