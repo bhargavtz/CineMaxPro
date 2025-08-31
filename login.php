@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_role'] = 'user'; // Set a role for regular users
                     $login_error = 'Login successful! Welcome, ' . htmlspecialchars($user['first_name'] ?: $user['email']) . '.';
                     unset($_POST['password']);
-                    header("Location: index.php"); // Redirect to home page after successful login
+                    header("Location: user_dashboard.php"); // Redirect to user dashboard after successful login
                     exit();
                 } else {
                     // Invalid credentials
@@ -88,9 +88,8 @@ require_once __DIR__ . '/includes/header.php'; // Include header AFTER PHP logic
             </div>
 
             <div class="form-floating position-relative">
-                <input type="password" class="form-control <?php echo isset($errors['password']) ? 'is-invalid' : ''; ?>" id="password" name="password" placeholder="Password" required autocomplete="current-password">
+                <input type="password" class="form-control <?php echo isset($errors['password']) ? 'is-invalid' : ''; ?>" id="password" name="password" placeholder="Password" required>
                 <label for="password">Password</label>
-                <span class="toggle-password position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;"><i class="fas fa-eye"></i></span> <!-- Font Awesome icon for toggle -->
                 <?php if (isset($errors['password'])): ?>
                     <div class="invalid-feedback"><?php echo $errors['password']; ?></div>
                 <?php endif; ?>
@@ -111,18 +110,5 @@ require_once __DIR__ . '/includes/header.php'; // Include header AFTER PHP logic
     </div>
 </div>
 
-<script>
-    // Ensure Font Awesome icons are correctly displayed
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.toggle-password').forEach(function(element) {
-            // Check if the Font Awesome icon is already present
-            if (!element.querySelector('i')) {
-                const icon = document.createElement('i');
-                icon.className = 'fas fa-eye'; // Default to eye icon
-                element.appendChild(icon);
-            }
-        });
-    });
-</script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

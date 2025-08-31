@@ -15,20 +15,20 @@
             font-size: 1.5rem;
             font-weight: bold;
         }
-        /* Dark theme navbar */
         .navbar-custom {
-            background-color: #1a1a1a;
+            background-color: #007bff;
         }
         .navbar-custom .navbar-brand,
         .navbar-custom .nav-link {
             color: #ffffff;
         }
         .navbar-custom .nav-link:hover {
-            color: #ffc107;
+            color: #f8f9fa;
+            text-decoration: underline;
         }
         footer {
             margin-top: auto;
-            background-color: #1a1a1a;
+            background-color: #007bff;
             color: #ffffff;
             padding: 20px 0;
         }
@@ -43,19 +43,7 @@
         .form-signin input[type="tel"],
         .form-signin input[type="text"] {
             margin-bottom: 10px;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-        }
-        .form-signin input[type="email"],
-        .form-signin input[type="tel"] {
-            margin-bottom: -1px;
-            border-bottom-right-radius: 0;
-            border-bottom-left-radius: 0;
-        }
-        .form-signin input[type="password"] {
-            margin-bottom: 10px;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
+            border-radius: 4px;
         }
         .btn-primary {
             background-color: #007bff;
@@ -106,7 +94,7 @@
                             </li>
                         <?php endif; ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="profile.php">My Profile</a>
+                            <a class="nav-link" href="user_dashboard.php?page=profile">My Profile</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>
@@ -124,42 +112,8 @@
         </div>
     </nav>
     <div class="content-wrapper" style="margin-top: 80px;">
-    <div class="text-end mb-3">
-        <button id="theme-toggle" class="theme-toggle-button">
-            Toggle Theme
-        </button>
-    </div>
     <div class="auth-container">
         <!-- Content will be injected here by specific PHP files -->
     </div>
-
-    <!-- Theme Toggle Script -->
-    <script>
-        const themeToggle = document.getElementById('theme-toggle');
-        const body = document.body;
-        const currentTheme = localStorage.getItem('theme');
-
-        const setTheme = (theme) => {
-            body.classList.add(theme);
-            if (theme === 'dark-mode') {
-                themeToggle.textContent = 'Light Mode';
-            } else {
-                themeToggle.textContent = 'Dark Mode';
-            }
-        };
-
-        if (currentTheme) {
-            setTheme(currentTheme);
-        } else {
-            setTheme('light-mode'); // Default to light mode
-        }
-
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            const newTheme = body.classList.contains('dark-mode') ? 'dark-mode' : 'light-mode';
-            localStorage.setItem('theme', newTheme);
-            setTheme(newTheme);
-        });
-    </script>
 </body>
 </html>

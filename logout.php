@@ -1,6 +1,5 @@
 <?php
-// Include the header which also includes config.php and starts the session
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/init.php'; // Ensure session is started and config is loaded
 
 // --- Logout Logic ---
 // Unset all session variables

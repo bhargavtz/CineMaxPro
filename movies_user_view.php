@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/includes/functions.php'; // Include functions first
-require_once __DIR__ . '/includes/header.php';    // Then include header
 
 // --- Search & Filter ---
 $search = trim($_GET['search'] ?? '');
@@ -14,8 +13,8 @@ if ($language) { $where[] = "language = ?"; $params[] = $language; }
 $where_sql = $where ? "WHERE " . implode(' AND ', $where) : "";
 
 // --- Fetch Movies ---
-$now_sql = "SELECT * FROM movies $where_sql AND release_date <= CURDATE() ORDER BY release_date DESC";
-$upcoming_sql = "SELECT * FROM movies $where_sql AND release_date > CURDATE() ORDER BY release_date ASC";
+$now_sql = "SELECT * FROM movies " . ($where_sql ? $where_sql . " AND" : "WHERE") . " release_date <= CURDATE() ORDER BY release_date DESC";
+$upcoming_sql = "SELECT * FROM movies " . ($where_sql ? $where_sql . " AND" : "WHERE") . " release_date > CURDATE() ORDER BY release_date ASC";
 $now_movies = $pdo->prepare($now_sql); $now_movies->execute($params); $now_movies = $now_movies->fetchAll(PDO::FETCH_ASSOC);
 $upcoming_movies = $pdo->prepare($upcoming_sql); $upcoming_movies->execute($params); $upcoming_movies = $upcoming_movies->fetchAll(PDO::FETCH_ASSOC);
 
@@ -61,8 +60,8 @@ if (isset($_GET['show_id'])) {
             <div class="card h-100">
                 <?php if (!empty($mv['poster'])): ?><img src="<?= $mv['poster'] ?>" class="card-img-top" alt="Poster"><?php endif; ?>
                 <div class="card-body">
-                    <h5 class="card-title"><?= htmlspecialchars($mv['title']) ?></h5>
-                    <p class="card-text">Genre: <?= htmlspecialchars($mv['genre']) ?><br>Language: <?= htmlspecialchars($mv['language']) ?></p>
+                    <h5 class="card-title"><?= sanitize_string($mv['title']) ?></h5>
+                    <p class="card-text">Genre: <?= sanitize_string($mv['genre']) ?><br>Language: <?= sanitize_string($mv['language']) ?></p>
                     <a href="?movie_id=<?= $mv['movie_id'] ?>" class="btn btn-outline-primary">View Details</a>
                 </div>
             </div>
@@ -76,8 +75,8 @@ if (isset($_GET['show_id'])) {
             <div class="card h-100">
                 <?php if (!empty($mv['poster'])): ?><img src="<?= $mv['poster'] ?>" class="card-img-top" alt="Poster"><?php endif; ?>
                 <div class="card-body">
-                    <h5 class="card-title"><?= htmlspecialchars($mv['title']) ?></h5>
-                    <p class="card-text">Genre: <?= htmlspecialchars($mv['genre']) ?><br>Language: <?= htmlspecialchars($mv['language']) ?></p>
+                    <h5 class="card-title"><?= sanitize_string($mv['title']) ?></h5>
+                    <p class="card-text">Genre: <?= sanitize_string($mv['genre']) ?><br>Language: <?= sanitize_string($mv['language']) ?></p>
                     <a href="?movie_id=<?= $mv['movie_id'] ?>" class="btn btn-outline-primary">View Details</a>
                 </div>
             </div>
@@ -93,8 +92,8 @@ if (isset($_GET['show_id'])) {
                 </div>
                 <div class="col-md-9">
                     <div class="card-body">
-                        <h5 class="card-title"><?= htmlspecialchars($selected_movie['title']) ?></h5>
-                        <p class="card-text">Genre: <?= htmlspecialchars($selected_movie['genre']) ?><br>Language: <?= htmlspecialchars($selected_movie['language']) ?><br>Cast: <?= htmlspecialchars($selected_movie['cast']) ?><br>Age Rating: <?= htmlspecialchars($selected_movie['age_rating']) ?><br>Description: <?= htmlspecialchars($selected_movie['description']) ?></p>
+                        <h5 class="card-title"><?= sanitize_string($selected_movie['title']) ?></h5>
+                        <p class="card-text">Genre: <?= sanitize_string($selected_movie['genre']) ?><br>Language: <?= sanitize_string($selected_movie['language']) ?><br>Cast: <?= sanitize_string($selected_movie['cast']) ?><br>Age Rating: <?= sanitize_string($selected_movie['age_rating']) ?><br>Description: <?= sanitize_string($selected_movie['description']) ?></p>
                         <?php if (!empty($selected_movie['trailer_link'])): ?><a href="<?= $selected_movie['trailer_link'] ?>" target="_blank" class="btn btn-info">Watch Trailer</a><?php endif; ?>
                     </div>
                 </div>

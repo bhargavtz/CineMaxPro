@@ -1,6 +1,12 @@
 <?php
-require_once __DIR__ . '/config.php'; // Include config for PDO
-require_once __DIR__ . '/includes/functions.php'; // Include functions
+require_once __DIR__ . '/includes/init.php'; // Include init for session_start(), config, and functions
+require_once __DIR__ . '/includes/functions.php'; // Include functions for isLoggedIn()
+
+// If user is already logged in, redirect to user dashboard
+if (isLoggedIn()) {
+    header("Location: user_dashboard.php");
+    exit();
+}
 
 // Fetch latest movies
 $latest_movies = $pdo->query("SELECT * FROM movies WHERE release_date <= CURDATE() ORDER BY release_date DESC LIMIT 5")->fetchAll(PDO::FETCH_ASSOC);
@@ -23,7 +29,8 @@ $upcoming_movies = $pdo->query("SELECT * FROM movies WHERE release_date > CURDAT
             font-family: 'Poppins', sans-serif;
         }
         .hero-bg {
-            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('assets/images/cinema-bg.jpg');
+            background-color: #343a40; /* Dark gray background */
+            /* background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('assets/images/cinema-bg.jpg'); */
             background-size: cover;
             background-position: center;
         }

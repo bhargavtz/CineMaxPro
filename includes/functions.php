@@ -16,6 +16,7 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
  * @return string
  */
 function sanitize_string($data) {
+    $data = $data ?? ''; // Convert null to empty string
     return htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8');
 }
 

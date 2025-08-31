@@ -1,10 +1,6 @@
 <?php
-// Include config.php first to establish PDO connection
-require_once __DIR__ . '/config.php';
-// Then include functions.php which depends on the PDO connection
-require_once __DIR__ . '/includes/functions.php';
-// Now include the header (HTML output)
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/init.php'; // Include init for session_start(), config, and functions
+require_once __DIR__ . '/includes/header.php'; // Now include the header (HTML output)
 
 // --- Login Logic ---
 $login_error = ''; // Variable to store login error messages

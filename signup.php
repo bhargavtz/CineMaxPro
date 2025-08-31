@@ -1,6 +1,9 @@
 <?php
-require_once __DIR__ . '/includes/functions.php'; // Include functions first
-require_once __DIR__ . '/includes/header.php';    // Then include header
+// First, include init.php for database and session setup
+require_once __DIR__ . '/includes/init.php';
+
+// After successful database connection, include header.php
+require_once __DIR__ . '/includes/header.php';
 
 // --- CSRF Token Generation ---
 // Generate a CSRF token if one doesn't exist in the session
@@ -68,8 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt = $pdo->prepare("INSERT INTO users (email, password_hash, first_name, last_name) VALUES (:email, :password_hash, :first_name, :last_name)");
                     
                     // Fetching first_name and last_name from POST, if they exist in the form
-                    $first_name = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING) ?: null;
-                    $last_name = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING) ?: null;
+                    $first_name = isset($_POST['first_name']) ? htmlspecialchars(trim($_POST['first_name']), ENT_QUOTES, 'UTF-8') : null;
+                    $last_name = isset($_POST['last_name']) ? htmlspecialchars(trim($_POST['last_name']), ENT_QUOTES, 'UTF-8') : null;
 
                     $insertSuccess = $stmt->execute([
                         ':email' => $email,
@@ -99,6 +102,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+require_once __DIR__ . '/includes/header.php'; // Include header AFTER PHP logic
 ?>
 
 <!-- Signup Form -->
