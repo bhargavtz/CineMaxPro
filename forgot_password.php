@@ -67,28 +67,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!-- Forgot Password Form -->
-<div class="form-signin">
-    <h1 class="h3 mb-3 fw-normal text-center">Forgot Password</h1>
-
-    <?php echo $message; ?>
-
-    <form action="forgot_password.php" method="POST" novalidate>
-        <!-- CSRF Token -->
-        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
-
-        <div class="form-floating">
-            <input type="email" class="form-control <?php echo isset($message) && strpos($message, 'email') !== false ? 'is-invalid' : ''; ?>" id="email" name="email" placeholder="Enter your email" required autofocus>
-            <label for="email">Email address</label>
-            <?php if (isset($message) && strpos($message, 'email') !== false): ?>
-                <!-- The alert message itself handles the error display -->
-            <?php endif; ?>
+<div class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg z-10">
+        <div class="text-center">
+            <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
+                Forgot Password
+            </h2>
         </div>
 
-        <button class="btn btn-primary w-100 py-2 mt-3" type="submit">Send Reset Link</button>
-    </form>
+        <?php 
+        // Custom logic to convert Bootstrap alerts to Tailwind CSS alerts
+        if (!empty($message)) {
+            $tailwind_message = str_replace('alert alert-danger', 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4', $message);
+            $tailwind_message = str_replace('alert alert-success', 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4', $tailwind_message);
+            $tailwind_message = str_replace('alert alert-info', 'bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4', $tailwind_message);
+            $tailwind_message = str_replace('alert-dismissible fade show', '', $tailwind_message); // Remove dismissible classes
+            $tailwind_message = str_replace('<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>', '', $tailwind_message); // Remove close button
+            echo $tailwind_message;
+        }
+        ?>
 
-    <p class="mt-5 mb-3 text-body-secondary text-center">Remember your password? <a href="login.php" class="link-offset-2">Log In</a></p>
+        <form class="mt-8 space-y-6" action="forgot_password.php" method="POST">
+            <!-- CSRF Token -->
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
+
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    <label for="email" class="sr-only">Email address</label>
+                    <input id="email" name="email" type="email" autocomplete="email" required autofocus
+                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                           placeholder="Email address">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Send Reset Link
+                </button>
+            </div>
+        </form>
+
+        <p class="mt-5 text-center text-sm text-gray-600">
+            Remember your password?
+            <a href="login.php" class="font-medium text-indigo-600 hover:text-indigo-500">
+                Log In
+            </a>
+        </p>
+    </div>
 </div>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

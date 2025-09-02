@@ -106,83 +106,93 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once __DIR__ . '/includes/header.php'; // Include header AFTER PHP logic
 ?>
 
-<!-- Signup Form -->
-<div class="form-signin">
-    <h1 class="h3 mb-3 fw-normal text-center">Sign Up</h1>
-
-    <?php if (!empty($signup_error)): ?>
-        <div class="alert alert-<?php echo ($signup_success ? 'success' : 'danger'); ?> alert-dismissible fade show" role="alert">
-            <?php echo htmlspecialchars($signup_error); ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    <?php endif; ?>
-
-    <form action="signup.php" method="POST" novalidate>
-        <!-- CSRF Token -->
-        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
-
-        <div class="form-floating">
-            <input type="text" class="form-control <?php echo isset($errors['first_name']) ? 'is-invalid' : ''; ?>" id="first_name" name="first_name" placeholder="First name" value="<?php echo isset($_POST['first_name']) ? htmlspecialchars($_POST['first_name']) : ''; ?>">
-            <label for="first_name">First Name</label>
-            <?php if (isset($errors['first_name'])): ?>
-                <div class="invalid-feedback"><?php echo $errors['first_name']; ?></div>
-            <?php endif; ?>
-        </div>
-        <div class="form-floating">
-            <input type="text" class="form-control <?php echo isset($errors['last_name']) ? 'is-invalid' : ''; ?>" id="last_name" name="last_name" placeholder="Last name" value="<?php echo isset($_POST['last_name']) ? htmlspecialchars($_POST['last_name']) : ''; ?>">
-            <label for="last_name">Last Name</label>
-            <?php if (isset($errors['last_name'])): ?>
-                <div class="invalid-feedback"><?php echo $errors['last_name']; ?></div>
-            <?php endif; ?>
+<div class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg z-10">
+        <div class="text-center">
+            <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
+                Sign Up
+            </h2>
         </div>
 
-        <div class="form-floating">
-            <input type="email" class="form-control <?php echo isset($errors['email']) ? 'is-invalid' : ''; ?>" id="email" name="email" placeholder="name@example.com" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" required>
-            <label for="email">Email address</label>
-            <?php if (isset($errors['email'])): ?>
-                <div class="invalid-feedback"><?php echo $errors['email']; ?></div>
-            <?php endif; ?>
-        </div>
-    <!-- Phone number field removed -->
+        <?php if (!empty($signup_error)): ?>
+            <div class="bg-<?php echo ($signup_success ? 'green' : 'red'); ?>-100 border border-<?php echo ($signup_success ? 'green' : 'red'); ?>-400 text-<?php echo ($signup_success ? 'green' : 'red'); ?>-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold"><?php echo ($signup_success ? 'Success!' : 'Error!'); ?></strong>
+                <span class="block sm:inline"><?php echo htmlspecialchars($signup_error); ?></span>
+            </div>
+        <?php endif; ?>
 
-        <div class="form-floating position-relative">
-            <input type="password" class="form-control <?php echo isset($errors['password']) ? 'is-invalid' : ''; ?>" id="password" name="password" placeholder="Password" required>
-            <label for="password">Password</label>
-            <span class="toggle-password position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;"><i class="fas fa-eye"></i></span> <!-- Font Awesome icon for toggle -->
-            <?php if (isset($errors['password'])): ?>
-                <div class="invalid-feedback"><?php echo $errors['password']; ?></div>
-            <?php endif; ?>
-        </div>
-        <div class="form-floating position-relative">
-            <input type="password" class="form-control <?php echo isset($errors['confirm_password']) ? 'is-invalid' : ''; ?>" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
-            <label for="confirm_password">Confirm Password</label>
-            <span class="toggle-password position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;"><i class="fas fa-eye"></i></span> <!-- Font Awesome icon for toggle -->
-            <?php if (isset($errors['confirm_password'])): ?>
-                <div class="invalid-feedback"><?php echo $errors['confirm_password']; ?></div>
-            <?php endif; ?>
-        </div>
+        <form class="mt-8 space-y-6" action="signup.php" method="POST">
+            <!-- CSRF Token -->
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
 
-        <button class="btn btn-primary w-100 py-2 mt-3" type="submit">Sign Up</button>
-    </form>
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    <label for="first_name" class="sr-only">First Name</label>
+                    <input id="first_name" name="first_name" type="text" autocomplete="given-name"
+                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm <?php echo isset($errors['first_name']) ? 'border-red-500' : ''; ?>"
+                           placeholder="First Name" value="<?php echo isset($_POST['first_name']) ? htmlspecialchars($_POST['first_name']) : ''; ?>">
+                    <?php if (isset($errors['first_name'])): ?>
+                        <p class="text-red-500 text-xs italic mt-1"><?php echo $errors['first_name']; ?></p>
+                    <?php endif; ?>
+                </div>
+                <div>
+                    <label for="last_name" class="sr-only">Last Name</label>
+                    <input id="last_name" name="last_name" type="text" autocomplete="family-name"
+                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm <?php echo isset($errors['last_name']) ? 'border-red-500' : ''; ?>"
+                           placeholder="Last Name" value="<?php echo isset($_POST['last_name']) ? htmlspecialchars($_POST['last_name']) : ''; ?>">
+                    <?php if (isset($errors['last_name'])): ?>
+                        <p class="text-red-500 text-xs italic mt-1"><?php echo $errors['last_name']; ?></p>
+                    <?php endif; ?>
+                </div>
+                <div>
+                    <label for="email" class="sr-only">Email address</label>
+                    <input id="email" name="email" type="email" autocomplete="email" required
+                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm <?php echo isset($errors['email']) ? 'border-red-500' : ''; ?>"
+                           placeholder="Email address" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
+                    <?php if (isset($errors['email'])): ?>
+                        <p class="text-red-500 text-xs italic mt-1"><?php echo $errors['email']; ?></p>
+                    <?php endif; ?>
+                </div>
+                <div>
+                    <label for="password" class="sr-only">Password</label>
+                    <input id="password" name="password" type="password" autocomplete="new-password" required
+                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm <?php echo isset($errors['password']) ? 'border-red-500' : ''; ?>"
+                           placeholder="Password">
+                    <?php if (isset($errors['password'])): ?>
+                        <p class="text-red-500 text-xs italic mt-1"><?php echo $errors['password']; ?></p>
+                    <?php endif; ?>
+                </div>
+                <div>
+                    <label for="confirm_password" class="sr-only">Confirm Password</label>
+                    <input id="confirm_password" name="confirm_password" type="password" autocomplete="new-password" required
+                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm <?php echo isset($errors['confirm_password']) ? 'border-red-500' : ''; ?>"
+                           placeholder="Confirm Password">
+                    <?php if (isset($errors['confirm_password'])): ?>
+                        <p class="text-red-500 text-xs italic mt-1"><?php echo $errors['confirm_password']; ?></p>
+                    <?php endif; ?>
+                </div>
+            </div>
 
-    <p class="mt-5 mb-3 text-body-secondary text-center">Already have an account? <a href="login.php" class="link-offset-2">Log In</a></p>
-    <p class="mt-3 mb-3 text-body-secondary text-center"><a href="forgot_password.php" class="link-offset-2">Forgot Password?</a></p>
+            <div>
+                <button type="submit"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Sign Up
+                </button>
+            </div>
+        </form>
+
+        <p class="mt-5 text-center text-sm text-gray-600">
+            Already have an account?
+            <a href="login.php" class="font-medium text-indigo-600 hover:text-indigo-500">
+                Log In
+            </a>
+        </p>
+        <p class="mt-3 text-center text-sm text-gray-600">
+            <a href="forgot_password.php" class="font-medium text-indigo-600 hover:text-indigo-500">
+                Forgot Password?
+            </a>
+        </p>
+    </div>
 </div>
-
-<!-- Font Awesome for password toggle icon -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
-<script>
-    // Ensure Font Awesome icons are correctly displayed
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.toggle-password').forEach(function(element) {
-            // Check if the Font Awesome icon is already present
-            if (!element.querySelector('i')) {
-                const icon = document.createElement('i');
-                icon.className = 'fas fa-eye'; // Default to eye icon
-                element.appendChild(icon);
-            }
-        });
-    });
-</script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>
