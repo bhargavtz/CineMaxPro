@@ -76,7 +76,13 @@ $upcoming_movies = $pdo->query("SELECT * FROM movies WHERE release_date > CURDAT
             <?php foreach ($latest_movies as $movie): ?>
             <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition duration-300 border border-gray-700">
                 <?php if (!empty($movie['poster'])): ?>
-                    <img src="<?= htmlspecialchars($movie['poster']) ?>" alt="<?= htmlspecialchars($movie['title']) ?>" class="w-full h-72 object-cover">
+                    <?php
+                        $posterPath = htmlspecialchars($movie['poster']);
+                        if (strpos($posterPath, 'uploads/posters/') === false) {
+                            $posterPath = 'uploads/posters/' . $posterPath;
+                        }
+                    ?>
+                    <img src="<?= $posterPath ?>" alt="<?= htmlspecialchars($movie['title']) ?>" class="w-full h-72 object-cover">
                 <?php else: ?>
                     <div class="w-full h-72 bg-gray-700 flex items-center justify-center text-gray-400 text-xl font-semibold">No Poster</div>
                 <?php endif; ?>
@@ -98,7 +104,13 @@ $upcoming_movies = $pdo->query("SELECT * FROM movies WHERE release_date > CURDAT
             <?php foreach ($upcoming_movies as $movie): ?>
             <div class="bg-gray-900 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition duration-300 border border-gray-700">
                 <?php if (!empty($movie['poster'])): ?>
-                    <img src="<?= htmlspecialchars($movie['poster']) ?>" alt="<?= htmlspecialchars($movie['title']) ?>" class="w-full h-72 object-cover">
+                    <?php
+                        $posterPath = htmlspecialchars($movie['poster']);
+                        if (strpos($posterPath, 'uploads/posters/') === false) {
+                            $posterPath = 'uploads/posters/' . $posterPath;
+                        }
+                    ?>
+                    <img src="<?= $posterPath ?>" alt="<?= htmlspecialchars($movie['title']) ?>" class="w-full h-72 object-cover">
                 <?php else: ?>
                     <div class="w-full h-72 bg-gray-700 flex items-center justify-center text-gray-400 text-xl font-semibold">No Poster</div>
                 <?php endif; ?>
