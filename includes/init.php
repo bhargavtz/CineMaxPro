@@ -8,6 +8,9 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+// Include auth functions
+require_once __DIR__ . '/auth_functions.php';
+
 // Include database configuration
 try {
     require_once __DIR__ . '/../config.php';

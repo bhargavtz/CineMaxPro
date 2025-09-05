@@ -15,8 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $login_error = 'Invalid request. CSRF token mismatch.';
     } else {
-        // Sanitize and validate inputs
-    $identifier = filter_input(INPUT_POST, 'identifier', FILTER_SANITIZE_STRING); // Now only email
+    // Sanitize and validate inputs
+    $identifier = filter_input(INPUT_POST, 'identifier', FILTER_VALIDATE_EMAIL); // Validate as email
         $password = $_POST['password'] ?? '';
 
         // --- Input Validation ---
@@ -38,12 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $user = $stmt->fetch();
 
                 if ($user && password_verify($password, $user['password_hash'])) {
-                    // Password is correct, log the user in
-                    loginUser($user['user_id'], $user['first_name'] ?: $user['email']);
-                    $_SESSION['user_role'] = 'user'; // Set a role for regular users
+                    // Password is correct, start user session
+                    startUserSession($user);
                     $login_error = 'Login successful! Welcome, ' . htmlspecialchars($user['first_name'] ?: $user['email']) . '.';
-                    unset($_POST['password']);
-                    header("Location: user_dashboard.php"); // Redirect to user dashboard after successful login
+                    
+                    // Redirect to intended page or dashboard
+                    $redirect = $_SESSION['redirect_after_login'] ?? 'user_dashboard.php';
+                    unset($_SESSION['redirect_after_login']);
+                    header("Location: " . $redirect);
                     exit();
                 } else {
                     // Invalid credentials

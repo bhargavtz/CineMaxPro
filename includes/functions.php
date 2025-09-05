@@ -45,7 +45,7 @@ function validate_phone($phone) {
 
 /**
  * Validate password strength.
- * Requires at least 8 characters, one uppercase, one lowercase, one number, one special character.
+ * Requires at least 8 characters.
  * @param string $password
  * @return bool
  */
@@ -53,9 +53,7 @@ function validate_password($password) {
     if (empty($password) || strlen($password) < 8) {
         return false;
     }
-    if (!preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/[0-9]/', $password) || !preg_match('/[!@#$%^&*()_+=-]/', $password)) {
-        return false;
-    }
+    // Removed complexity checks for simpler passwords
     return true;
 }
 
@@ -88,7 +86,8 @@ function verify_password($password, $hash) {
  * @return bool
  */
 function isLoggedIn() {
-    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+    // Check if user_id is set and is a positive integer
+    return isset($_SESSION['user_id']) && $_SESSION['user_id'] > 0;
 }
 
 /**
@@ -107,8 +106,8 @@ function getUserId() {
 function loginUser($userId, $username) {
     $_SESSION['user_id'] = $userId;
     $_SESSION['username'] = $username; // Store username or identifier
-    // Regenerate session ID to prevent session fixation
-    session_regenerate_id(true);
+// Regenerate session ID to prevent session fixation
+    session_regenerate_id(true); // Regenerate session ID to prevent session fixation
 }
 
 /**

@@ -2,9 +2,6 @@
 // First, include init.php for database and session setup
 require_once __DIR__ . '/includes/init.php';
 
-// After successful database connection, include header.php
-require_once __DIR__ . '/includes/header.php';
-
 // --- CSRF Token Generation ---
 // Generate a CSRF token if one doesn't exist in the session
 if (empty($_SESSION['csrf_token'])) {
@@ -15,6 +12,112 @@ $csrf_token = $_SESSION['csrf_token'];
 // --- Form Submission Handling ---
 $signup_error = '';
 $signup_success = '';
+$errors = [];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Verify CSRF token
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $signup_error = 'Invalid request. CSRF token mismatch.';
+    } else {
+        // Sanitize and validate inputs
+        $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    // $phone removed
+        $password = $_POST['password'] ?? '';
+        $confirm_password = $_POST['confirm_password'] ?? '';
+
+        // --- Input Validation ---
+        $errors = [];
+
+        // Email validation
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'Please enter a valid email address.';
+        }
+
+    // Phone validation removed
+
+        // Password validation
+        if (empty($password)) {
+            $errors['password'] = 'Password is required.';
+        } elseif (strlen($password) < 8) {
+            $errors['password'] = 'Password must be at least 8 characters long.';
+        }
+        // Removed complexity checks for simpler passwords
+
+        // Confirm password validation
+        if (empty($confirm_password)) {
+            $errors['confirm_password'] = 'Please confirm your password.';
+        } elseif ($password !== $confirm_password) {
+            $errors['confirm_password'] = 'Passwords do not match.';
+        }
+
+        // --- Database Check and Insertion ---
+        if (empty($errors)) {
+            try {
+                // Check if email or phone already exists
+                $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = :email");
+                $stmt->execute([':email' => $email]);
+                $userExists = $stmt->fetch();
+
+                if ($userExists) {
+                    $signup_error = 'Email already registered. Please log in or use a different one.';
+                } else {
+                    // Hash the password
+                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+                    // Prepare and execute the INSERT statement
+                    $stmt = $pdo->prepare("INSERT INTO users (email, password_hash, first_name, last_name) VALUES (:email, :password_hash, :first_name, :last_name)");
+                    
+                    // Fetching first_name and last_name from POST, if they exist in the form
+                    $first_name_raw = $_POST['first_name'] ?? null;
+                    $first_name = null;
+                    if ($first_name_raw !== null) {
+                        $trimmed_first_name = trim($first_name_raw);
+                        if ($trimmed_first_name !== '') {
+                            $first_name = htmlspecialchars($trimmed_first_name, ENT_QUOTES, 'UTF-8');
+                        }
+                    }
+
+                    $last_name_raw = $_POST['last_name'] ?? null;
+                    $last_name = null;
+                    if ($last_name_raw !== null) {
+                        $trimmed_last_name = trim($last_name_raw);
+                        if ($trimmed_last_name !== '') {
+                            $last_name = htmlspecialchars($trimmed_last_name, ENT_QUOTES, 'UTF-8');
+                        }
+                    }
+
+                    $insertSuccess = $stmt->execute([
+                        ':email' => $email,
+                        ':password_hash' => $hashed_password,
+                        ':first_name' => $first_name,
+                        ':last_name' => $last_name
+                    ]);
+
+                    if ($insertSuccess) {
+                        $signup_success = 'Registration successful! You can now log in.';
+                        // Redirect to login page after successful registration
+                        header("Location: login.php?message=" . urlencode($signup_success));
+                        exit();
+                    } else {
+                        $signup_error = 'Registration failed. Please try again.';
+                    }
+                }
+            } catch (\PDOException $e) {
+                // Log the error for debugging
+                error_log("Signup DB Error: " . $e->getMessage());
+                // Display a simplified error message for debugging
+                $signup_error = 'Database error: ' . $e->getMessage();
+            }
+        } else {
+            // If there are validation errors, display them
+            $signup_error = 'Please correct the following errors:';
+            // The errors array will be used below to display specific field errors
+        }
+    }
+}
+
+// Include header after processing to avoid header already sent issues
+require_once __DIR__ . '/includes/header.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Verify CSRF token
@@ -71,8 +174,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt = $pdo->prepare("INSERT INTO users (email, password_hash, first_name, last_name) VALUES (:email, :password_hash, :first_name, :last_name)");
                     
                     // Fetching first_name and last_name from POST, if they exist in the form
-                    $first_name = isset($_POST['first_name']) ? htmlspecialchars(trim($_POST['first_name']), ENT_QUOTES, 'UTF-8') : null;
-                    $last_name = isset($_POST['last_name']) ? htmlspecialchars(trim($_POST['last_name']), ENT_QUOTES, 'UTF-8') : null;
+                    $first_name_raw = $_POST['first_name'] ?? null;
+                    $first_name = null;
+                    if ($first_name_raw !== null) {
+                        $trimmed_first_name = trim($first_name_raw);
+                        if ($trimmed_first_name !== '') {
+                            $first_name = htmlspecialchars($trimmed_first_name, ENT_QUOTES, 'UTF-8');
+                        }
+                    }
+
+                    $last_name_raw = $_POST['last_name'] ?? null;
+                    $last_name = null;
+                    if ($last_name_raw !== null) {
+                        $trimmed_last_name = trim($last_name_raw);
+                        if ($trimmed_last_name !== '') {
+                            $last_name = htmlspecialchars($trimmed_last_name, ENT_QUOTES, 'UTF-8');
+                        }
+                    }
 
                     $insertSuccess = $stmt->execute([
                         ':email' => $email,
@@ -83,9 +201,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     if ($insertSuccess) {
                         $signup_success = 'Registration successful! You can now log in.';
-                        // Optionally, clear the form fields or redirect to login page
-                        // header("Location: login.php?message=" . urlencode($signup_success));
-                        // exit();
+                        // Redirect to login page after successful registration
+                        header("Location: login.php?message=" . urlencode($signup_success));
+                        exit();
                     } else {
                         $signup_error = 'Registration failed. Please try again.';
                     }
@@ -93,7 +211,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } catch (\PDOException $e) {
                 // Log the error for debugging
                 error_log("Signup DB Error: " . $e->getMessage());
-                $signup_error = 'An unexpected error occurred during registration. Please try again later.';
+                // Display the specific PDOException message to the user for debugging
+                $signup_error = 'An unexpected error occurred during registration: ' . htmlspecialchars($e->getMessage()) . '. Please try again later.';
             }
         } else {
             // If there are validation errors, display them
@@ -194,5 +313,3 @@ require_once __DIR__ . '/includes/header.php'; // Include header AFTER PHP logic
         </p>
     </div>
 </div>
-
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
