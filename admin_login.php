@@ -22,14 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $staff = $stmt->fetch();
 
     if ($staff && password_verify($password, $staff['password_hash'])) {
-        // Set session variables
-        $_SESSION['staff_id'] = $staff['staff_id'];
-        $_SESSION['user_id'] = $staff['user_id'];
-        $_SESSION['username'] = $staff['username'];
-        $_SESSION['role'] = $staff['role'];
+        // Start admin session
+        startAdminSession($staff);
         
-        // Redirect to dashboard
-        header('Location: admin_dashboard.php');
+        // Redirect to intended page or dashboard
+        $redirect = $_SESSION['redirect_after_login'] ?? 'admin_dashboard.php';
+        unset($_SESSION['redirect_after_login']);
+        header('Location: ' . $redirect);
         exit;
     } else {
         $error = "Invalid username or password";
