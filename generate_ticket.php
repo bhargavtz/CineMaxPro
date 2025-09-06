@@ -2,34 +2,16 @@
 // Include necessary files
 require_once 'config.php'; // For database connection
 
-// --- Library Includes ---
-// Attempt to use Dompdf, provide dummy if not found
-$dompdf_class_exists = class_exists('Dompdf\Dompdf'); // Flag to track if Dompdf class is available
-
-if (!$dompdf_class_exists) {
-    // Dummy Dompdf class if not installed
-    class Dompdf {
-        public function __construct() {}
-        public function loadHtml($html) {}
-        public function setPaper($paper, $orientation = 'portrait') {}
-        public function render() {}
-        public function stream($filename, $options = []) {}
-    }
-    echo "<p style='color:red;'>Warning: Dompdf library not found. PDF generation will be simulated.</p>";
+// Check if Composer's autoload file exists
+if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
+    die('Please run "php install_dependencies.php" first to install required libraries.');
 }
 
-// Handle PHP QR Code library
-if (!function_exists('QRcode::png')) {
-    // Dummy QRcode function if not installed
-    class QRcode {
-        public static function png($text, $outfile = false, $level = 'L', $size = 3, $margin = 4, $saveandprint = false) {
-            // Simulate QR code by displaying text
-            echo "<div style='border: 1px solid black; padding: 10px; background-color: #eee;'>QR Code for: <strong>" . htmlspecialchars($text) . "</strong></div>";
-            return false; // Indicate no file was generated
-        }
-    }
-    echo "<p style='color:red;'>Warning: PHP QR Code library not found. QR Code will be simulated.</p>";
-}
+// Include Composer's autoloader
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 // --- Database Connection ---
 try {
@@ -89,8 +71,13 @@ if ($booking_id > 0) {
 
 // --- PDF Generation ---
 if ($ticket_data) {
-    // Instantiate Dompdf (either the real one or the dummy one)
-    $dompdf = $dompdf_class_exists ? new \Dompdf\Dompdf() : new Dompdf();
+    // Configure Dompdf
+    $options = new Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isPhpEnabled', true);
+    
+    // Create new Dompdf instance
+    $dompdf = new Dompdf($options);
 
     // HTML content for the ticket
     $html = '

@@ -74,29 +74,29 @@ if (isset($_GET['show_id'])) {
         </div>
     </form>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
-        <?php foreach ($now_movies as $mv): ?>
-        <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition duration-300 border border-gray-700">
-            <?php if (!empty($mv['poster_path'])): ?>
-                <img src="uploads/posters/<?= htmlspecialchars($mv['poster_path']) ?>" class="w-full h-72 object-cover" alt="Poster">
-            <?php else: ?>
-                <div class="w-full h-72 bg-gray-700 flex items-center justify-center text-gray-400 text-xl font-semibold">No Poster</div>
-            <?php endif; ?>
-            <div class="p-6">
-                <h5 class="text-2xl font-bold mb-2 text-white"><?= sanitize_string($mv['title']) ?></h5>
-                <p class="text-gray-400 text-sm mb-4">Genre: <?= sanitize_string($mv['genre']) ?><br>Language: <?= sanitize_string($mv['language']) ?></p>
-                <a href="?movie_id=<?= $mv['movie_id'] ?>" class="block w-full bg-red-600 hover:bg-red-700 text-white text-center font-bold py-3 px-4 rounded-lg transition duration-300">View Details</a>
+            <?php foreach ($now_movies as $mv): ?>
+            <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition duration-300 border border-gray-700">
+                <?php if (!empty($mv['poster_path'])): ?>
+                    <img src="<?= getPosterPath($mv['poster_path']) ?>" class="w-full h-72 object-cover" alt="Poster">
+                <?php else: ?>
+                    <div class="w-full h-72 bg-gray-700 flex items-center justify-center text-gray-400 text-xl font-semibold"><?= getPosterPath(null) ?></div>
+                <?php endif; ?>
+                <div class="p-6">
+                    <h5 class="text-2xl font-bold mb-2 text-white"><?= sanitize_string($mv['title']) ?></h5>
+                    <p class="text-gray-400 text-sm mb-4">Genre: <?= sanitize_string($mv['genre']) ?><br>Language: <?= sanitize_string($mv['language']) ?></p>
+                    <a href="?movie_id=<?= $mv['movie_id'] ?>" class="block w-full bg-red-600 hover:bg-red-700 text-white text-center font-bold py-3 px-4 rounded-lg transition duration-300">View Details</a>
+                </div>
             </div>
-        </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
     </div>
     <h2 class="text-5xl font-extrabold text-center mb-12 text-red-500">Upcoming Movies</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
         <?php foreach ($upcoming_movies as $mv): ?>
         <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition duration-300 border border-gray-700">
             <?php if (!empty($mv['poster_path'])): ?>
-                <img src="uploads/posters/<?= htmlspecialchars($mv['poster_path']) ?>" class="w-full h-72 object-cover" alt="Poster">
+                <img src="<?= getPosterPath($mv['poster_path']) ?>" class="w-full h-72 object-cover" alt="Poster">
             <?php else: ?>
-                <div class="w-full h-72 bg-gray-700 flex items-center justify-center text-gray-400 text-xl font-semibold">No Poster</div>
+                <div class="w-full h-72 bg-gray-700 flex items-center justify-center text-gray-400 text-xl font-semibold"><?= getPosterPath(null) ?></div>
             <?php endif; ?>
             <div class="p-6">
                 <h5 class="text-2xl font-bold mb-2 text-white"><?= sanitize_string($mv['title']) ?></h5>
@@ -112,9 +112,9 @@ if (isset($_GET['show_id'])) {
             <div class="md:flex">
                 <div class="md:flex-shrink-0">
                     <?php if (!empty($selected_movie['poster_path'])): ?>
-                        <img src="uploads/posters/<?= htmlspecialchars($selected_movie['poster_path']) ?>" class="w-full h-96 object-cover md:w-72" alt="Poster">
+                        <img src="<?= getPosterPath($selected_movie['poster_path']) ?>" class="w-full h-96 object-cover md:w-72" alt="Poster">
                     <?php else: ?>
-                        <div class="w-full h-96 bg-gray-700 flex items-center justify-center text-gray-400 text-xl font-semibold md:w-72">No Poster</div>
+                        <div class="w-full h-96 bg-gray-700 flex items-center justify-center text-gray-400 text-xl font-semibold md:w-72"><?= getPosterPath(null) ?></div>
                     <?php endif; ?>
                 </div>
                 <div class="p-8">

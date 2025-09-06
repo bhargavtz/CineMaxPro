@@ -33,113 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors['email'] = 'Please enter a valid email address.';
         }
 
-    // Phone validation removed
-
-        // Password validation
-        if (empty($password)) {
-            $errors['password'] = 'Password is required.';
-        } elseif (strlen($password) < 8) {
-            $errors['password'] = 'Password must be at least 8 characters long.';
-        }
-        // Removed complexity checks for simpler passwords
-
-        // Confirm password validation
-        if (empty($confirm_password)) {
-            $errors['confirm_password'] = 'Please confirm your password.';
-        } elseif ($password !== $confirm_password) {
-            $errors['confirm_password'] = 'Passwords do not match.';
-        }
-
-        // --- Database Check and Insertion ---
-        if (empty($errors)) {
-            try {
-                // Check if email or phone already exists
-                $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = :email");
-                $stmt->execute([':email' => $email]);
-                $userExists = $stmt->fetch();
-
-                if ($userExists) {
-                    $signup_error = 'Email already registered. Please log in or use a different one.';
-                } else {
-                    // Hash the password
-                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-                    // Prepare and execute the INSERT statement
-                    $stmt = $pdo->prepare("INSERT INTO users (email, password_hash, first_name, last_name) VALUES (:email, :password_hash, :first_name, :last_name)");
-                    
-                    // Fetching first_name and last_name from POST, if they exist in the form
-                    $first_name_raw = $_POST['first_name'] ?? null;
-                    $first_name = null;
-                    if ($first_name_raw !== null) {
-                        $trimmed_first_name = trim($first_name_raw);
-                        if ($trimmed_first_name !== '') {
-                            $first_name = htmlspecialchars($trimmed_first_name, ENT_QUOTES, 'UTF-8');
-                        }
-                    }
-
-                    $last_name_raw = $_POST['last_name'] ?? null;
-                    $last_name = null;
-                    if ($last_name_raw !== null) {
-                        $trimmed_last_name = trim($last_name_raw);
-                        if ($trimmed_last_name !== '') {
-                            $last_name = htmlspecialchars($trimmed_last_name, ENT_QUOTES, 'UTF-8');
-                        }
-                    }
-
-                    $insertSuccess = $stmt->execute([
-                        ':email' => $email,
-                        ':password_hash' => $hashed_password,
-                        ':first_name' => $first_name,
-                        ':last_name' => $last_name
-                    ]);
-
-                    if ($insertSuccess) {
-                        $signup_success = 'Registration successful! You can now log in.';
-                        // Redirect to login page after successful registration
-                        header("Location: login.php?message=" . urlencode($signup_success));
-                        exit();
-                    } else {
-                        $signup_error = 'Registration failed. Please try again.';
-                    }
-                }
-            } catch (\PDOException $e) {
-                // Log the error for debugging
-                error_log("Signup DB Error: " . $e->getMessage());
-                // Display a simplified error message for debugging
-                $signup_error = 'Database error: ' . $e->getMessage();
-            }
-        } else {
-            // If there are validation errors, display them
-            $signup_error = 'Please correct the following errors:';
-            // The errors array will be used below to display specific field errors
-        }
-    }
-}
-
-// Include header after processing to avoid header already sent issues
-require_once __DIR__ . '/includes/header.php';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Verify CSRF token
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        $signup_error = 'Invalid request. CSRF token mismatch.';
-    } else {
-        // Sanitize and validate inputs
-        $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    // $phone removed
-        $password = $_POST['password'] ?? '';
-        $confirm_password = $_POST['confirm_password'] ?? '';
-
-        // --- Input Validation ---
-        $errors = [];
-
-        // Email validation
-        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Please enter a valid email address.';
-        }
-
-    // Phone validation removed
-
         // Password validation
         if (empty($password)) {
             $errors['password'] = 'Password is required.';
@@ -231,7 +124,19 @@ require_once __DIR__ . '/includes/header.php'; // Include header AFTER PHP logic
             <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
                 Sign Up
             </h2>
-        </div>
+                </div>
+            <div>
+                <label for="role" class="sr-only">Role</label>
+                <select id="role" name="role" required
+                        class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+                    <option value="user">User</option>
+                    <option value="staff">Staff</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <?php if (isset($errors['role'])): ?>
+                    <p class="text-red-500 text-xs italic mt-1"><?php echo $errors['role']; ?></p>
+                <?php endif; ?>
+            </div>
 
         <?php if (!empty($signup_error)): ?>
             <div class="bg-<?php echo ($signup_success ? 'green' : 'red'); ?>-100 border border-<?php echo ($signup_success ? 'green' : 'red'); ?>-400 text-<?php echo ($signup_success ? 'green' : 'red'); ?>-700 px-4 py-3 rounded relative mb-4" role="alert">

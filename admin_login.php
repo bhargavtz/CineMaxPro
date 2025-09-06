@@ -7,31 +7,46 @@ if (isset($_SESSION['staff_id'])) {
     exit;
 }
 
+$error = '';
+
 // Process login form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
+    $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'] ?? '';
     
     // Validate credentials against users and staff tables
     $sql = "SELECT u.*, s.staff_id, s.role 
             FROM users u 
             INNER JOIN staff s ON u.user_id = s.user_id 
-            WHERE u.username = ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$username]);
-    $staff = $stmt->fetch();
+            WHERE u.email = ?";
+    
+    try {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$email]);
+        $staff = $stmt->fetch();
 
-    if ($staff && password_verify($password, $staff['password_hash'])) {
-        // Start admin session
-        startAdminSession($staff);
-        
-        // Redirect to intended page or dashboard
-        $redirect = $_SESSION['redirect_after_login'] ?? 'admin_dashboard.php';
-        unset($_SESSION['redirect_after_login']);
-        header('Location: ' . $redirect);
-        exit;
-    } else {
-        $error = "Invalid username or password";
+        if ($staff && password_verify($password, $staff['password_hash'])) {
+            // Check if the user has the 'admin' role
+            if ($staff['role'] === 'admin') {
+                // Start admin session
+                startAdminSession($staff);
+                
+                // Redirect to intended page or dashboard
+                $redirect = $_SESSION['redirect_after_login'] ?? 'admin_dashboard.php';
+                unset($_SESSION['redirect_after_login']);
+                header('Location: ' . $redirect);
+                exit;
+            } else {
+                // User is staff, not admin
+                $error = "You do not have administrator privileges.";
+            }
+        } else {
+            // Invalid username or password
+            $error = "Invalid username or password";
+        }
+    } catch (PDOException $e) {
+        $error = "A system error occurred. Please try again later.";
+        error_log("Admin login error: " . $e->getMessage());
     }
 }
 
@@ -56,10 +71,10 @@ require_once __DIR__ . '/includes/header.php';
         <form class="mt-8 space-y-6" method="POST" action="">
             <div class="rounded-md shadow-sm -space-y-px">
                 <div>
-                    <label for="username" class="sr-only">Username</label>
-                    <input id="username" name="username" type="text" autocomplete="username" required
+                    <label for="email" class="sr-only">Email address</label>
+                    <input id="email" name="email" type="email" autocomplete="email" required
                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                           placeholder="Username">
+                           placeholder="Email address">
                 </div>
                 <div>
                     <label for="password" class="sr-only">Password</label>

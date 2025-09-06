@@ -14,7 +14,7 @@ function startUserSession($user) {
     $_SESSION['user_id'] = $user['user_id'];
     $_SESSION['email'] = $user['email'];
     $_SESSION['first_name'] = $user['first_name'];
-    $_SESSION['user_role'] = 'user';
+    $_SESSION['user_role'] = $user['role']; // Dynamically set role
     $_SESSION['last_activity'] = time();
 }
 
@@ -31,8 +31,8 @@ function startAdminSession($admin) {
     $_SESSION['staff_id'] = $admin['staff_id'];
     $_SESSION['user_id'] = $admin['user_id'];
     $_SESSION['username'] = $admin['username'];
-    $_SESSION['role'] = $admin['role'];
-    $_SESSION['user_role'] = 'admin';
+    // $_SESSION['role'] = $admin['role']; // Redundant, $_SESSION['user_role'] is used for checks
+    $_SESSION['user_role'] = $admin['role']; // Dynamically set role
     $_SESSION['last_activity'] = time();
 }
 
@@ -77,10 +77,39 @@ function requireAdminLogin() {
 }
 
 /**
+ * Require staff login for protected pages
+ * @return void
+ */
+function requireStaffLogin() {
+    if (!isStaffLoggedIn()) {
+        $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+        header('Location: admin_staff_login.php');
+        exit;
+    }
+}
+
+/**
  * End user session and redirect
  * @return void
  */
 function logout() {
+    // Determine the redirect URL based on user role
+    $redirect_url = 'login.php'; // Default for users
+    if (isset($_SESSION['user_role'])) {
+        switch ($_SESSION['user_role']) {
+            case 'admin':
+                $redirect_url = 'admin_login.php';
+                break;
+            case 'staff':
+                $redirect_url = 'admin_staff_login.php';
+                break;
+            case 'user':
+            default:
+                $redirect_url = 'login.php';
+                break;
+        }
+    }
+
     // Unset all session variables
     $_SESSION = array();
 
@@ -92,7 +121,17 @@ function logout() {
     // Destroy the session
     session_destroy();
 
-    // Redirect to login page
-    header('Location: login.php');
+    // Redirect to the appropriate login page
+    header('Location: ' . $redirect_url);
     exit;
 }
+
+/**
+ * Check if staff is logged in
+ * @return bool
+ */
+function isStaffLoggedIn() {
+    return isset($_SESSION['user_id']) && isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'staff';
+}
+
+?>

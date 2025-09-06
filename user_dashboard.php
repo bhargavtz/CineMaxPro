@@ -2,11 +2,9 @@
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/includes/functions.php';
 
-// Ensure user is logged in
-if (!isLoggedIn()) {
-    header("Location: login.php");
-    exit();
-}
+// Ensure user is logged in and has the 'user' role
+require_once __DIR__ . '/includes/auth_functions.php'; // Ensure auth_functions is included for requireUserLogin
+requireUserLogin();
 
 // Check if a specific page is requested
 $page = $_GET['page'] ?? 'movies_user_view'; // Default to movies_user_view

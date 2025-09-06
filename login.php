@@ -42,10 +42,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     startUserSession($user);
                     $login_error = 'Login successful! Welcome, ' . htmlspecialchars($user['first_name'] ?: $user['email']) . '.';
                     
-                    // Redirect to intended page or dashboard
-                    $redirect = $_SESSION['redirect_after_login'] ?? 'user_dashboard.php';
-                    unset($_SESSION['redirect_after_login']);
-                    header("Location: " . $redirect);
+                    // Determine the redirect URL based on user role
+                    $redirect_url = 'login.php'; // Default if role is unknown or not set
+                    if (isset($_SESSION['user_role'])) {
+                        switch ($_SESSION['user_role']) {
+                            case 'admin':
+                                $redirect_url = 'admin_dashboard.php'; // Or wherever admins should go
+                                break;
+                            case 'staff':
+                                $redirect_url = 'staff_dashboard.php'; // Or wherever staff should go
+                                break;
+                            case 'user':
+                            default:
+                                $redirect_url = 'user_dashboard.php';
+                                break;
+                        }
+                    }
+                    // If there was a specific redirect after login, use that instead of the dashboard
+                    if (isset($_SESSION['redirect_after_login'])) {
+                        $redirect_url = $_SESSION['redirect_after_login'];
+                        unset($_SESSION['redirect_after_login']);
+                    }
+
+                    header("Location: " . $redirect_url);
                     exit();
                 } else {
                     // Invalid credentials
