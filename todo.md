@@ -1,26 +1,12 @@
-- [x] Analyze requirements
-- [x] Set up necessary files (todo.md, config.php read, header.php read, admin_staff_login.php created, admin_dashboard.php created, cinema_schema.sql read, verify_ticket.php created, admin_refunds.php created, admin_bookings.php created)
-- [x] Update admin_staff_login.php for correct staff/user join and role
-- [x] Correct admin_dashboard.php to remove duplicate content and ensure proper role handling
-- [x] Create verify_ticket.php
-- [x] Create admin_refunds.php
-- [x] Create admin_bookings.php
-- [x] Create logout.php
-- [x] Create admin_reports.php (main reporting hub)
-- [x] Create revenue_report.php (with data fetching, table display, and Chart.js integration for all revenue types)
-- [x] Create movie_popularity_report.php (with data fetching and basic table display)
-- [x] Create top_users_report.php (with data fetching and basic table display)
-- [x] Create export_report.php (improved CSV export logic for different reports)
-- [x] Implement revenue reports (daily, weekly, monthly)
-- [x] Implement movie popularity report
-- [x] Implement top users report
-- [x] Implement CSV export for reports
-- [ ] Implement PDF export for reports
-- [x] Integrate Chart.js for visualization
-- [x] Implement role-based access for reports
-- [x] Add Bootstrap Dark/Light mode toggle for UI
-- [x] Create README.md file
-- [x] Fix "headers already sent" error
-- [x] Enhance index.php with Tailwind CSS
-- [ ] Test all functionalities
-- [ ] Verify results
+# TODO List for User, Admin, and Staff Management
+
+- [ ] Analyze existing authentication logic in `includes/auth_functions.php` and `includes/functions.php`.
+- [ ] Refactor `signup.php` to handle role selection (user, staff, admin) during signup, or create separate signup files if necessary.
+- [ ] Ensure `login.php` handles user login.
+- [ ] Ensure `admin_login.php` handles administrator login.
+- [ ] Ensure `admin_staff_login.php` handles staff login.
+- [ ] Implement distinct logout functionality for each role, potentially by modifying `logout.php` or creating role-specific logout files.
+- [ ] Verify that the system supports multiple users, staff, and administrators.
+- [ ] Implement role-based access control to restrict access to dashboards and functionalities based on user role.
+- [ ] Test signup, login, and logout for all three roles (user, staff, admin).
+- [ ] Test dashboard access and functionality for each role.

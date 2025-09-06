@@ -23,13 +23,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($staff_data && password_verify($password, $staff_data['password_hash'])) {
                 // Password is correct, start session
                 session_regenerate_id(true); // Regenerate session ID for security
-                $_SESSION['staff_id'] = $staff_data['staff_id']; // Get staff_id from staff table
-                $_SESSION['username'] = $staff_data['username']; // Get username from users table
-                $_SESSION['user_role'] = $staff_data['position']; // Use 'position' from staff table as role
 
-                // Redirect to the admin dashboard
-                header("Location: admin_dashboard.php");
-                exit();
+                if ($staff_data['position'] === 'admin') {
+                    // Start admin session
+                    $_SESSION['staff_id'] = $staff_data['staff_id'];
+                    $_SESSION['user_id'] = $staff_data['user_id'];
+                    $_SESSION['username'] = $staff_data['username']; // This is from users table
+                    $_SESSION['role'] = $staff_data['position']; // 'admin'
+                    $_SESSION['user_role'] = 'admin'; // Explicitly set user_role to admin
+                    $_SESSION['last_activity'] = time();
+
+                    // Redirect to the admin dashboard
+                    header("Location: admin_dashboard.php");
+                    exit();
+                } else {
+                    // Start staff session (not admin)
+                    $_SESSION['user_id'] = $staff_data['user_id'];
+                    $_SESSION['username'] = $staff_data['username']; // Use username for staff
+                    $_SESSION['user_role'] = $staff_data['position']; // Use position as role, e.g., 'staff', 'manager'
+                    $_SESSION['last_activity'] = time();
+
+                    // Redirect to a staff-specific dashboard
+                    header("Location: staff_dashboard.php");
+                    exit();
+                }
             } else {
                 $login_error = "Invalid username or password.";
             }

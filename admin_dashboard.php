@@ -14,12 +14,13 @@
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/includes/functions.php';
 
-// Require staff login before any output
-requireStaffLogin();
+// Require admin login before any output
+requireAdminLogin();
 
 // Get staff details from session
 $staff_id = $_SESSION['staff_id'] ?? null;
 if (!$staff_id) {
+    // This check might be redundant if requireAdminLogin() is robust, but good for safety
     header('Location: admin_login.php');
     exit;
 }
@@ -36,20 +37,24 @@ try {
     $staff = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$staff) {
+        // If staff details not found, redirect to login
         header('Location: admin_login.php');
         exit;
     }
     
     $username = $staff['username'];
-    $role = $staff['role'];
+    // Use the role from the session, which is set during login
+    // $_SESSION['role'] is set in auth_functions.php startAdminSession
+    // $_SESSION['user_role'] is also set, but $_SESSION['role'] is more specific for admin context
+    $role = $_SESSION['role'] ?? $staff['role']; // Fallback to fetched role if session is somehow missing
 } catch (PDOException $e) {
     error_log($e->getMessage());
     $username = 'Unknown';
-    $role = 'Staff';
+    $role = 'Admin'; // Default to Admin if error occurs, or handle appropriately
 }
 
-// Temporarily force role to 'Admin' for testing purposes
-$role = 'Admin';
+// Remove the hardcoded role override
+// $role = 'Admin'; 
 
 $pageTitle = "Admin Dashboard";
 // require_once __DIR__ . '/includes/header.php'; // Removed to avoid conflicting styles

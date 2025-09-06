@@ -131,15 +131,6 @@ function logoutUser() {
     session_destroy();
 }
 
-/**
- * Check if a staff member is logged in. If not, redirect to the staff login page.
- * Assumes staff ID is stored in $_SESSION['staff_id'].
- */
-function requireStaffLogin() {
-    if (!isset($_SESSION['staff_id']) || empty($_SESSION['staff_id'])) {
-        redirect('admin_staff_login.php');
-    }
-}
 
 // --- Password Reset Functionality ---
 
@@ -237,6 +228,24 @@ function sendEmail($to, $subject, $body) {
 function redirect($url) {
     header("Location: " . $url);
     exit();
+}
+
+// --- Poster Path Helper ---
+/**
+ * Generates the full path for a movie poster.
+ * Ensures the path starts with 'uploads/posters/' if only a filename is provided.
+ * @param string|null $posterFileName The filename of the poster.
+ * @return string The full path to the poster, or a placeholder if no filename is provided.
+ */
+function getPosterPath($posterFileName) {
+    if (empty($posterFileName)) {
+        return 'uploads/posters/no-poster-available.png'; // Placeholder for missing posters
+    }
+    $posterFileName = htmlspecialchars($posterFileName);
+    if (strpos($posterFileName, 'uploads/posters/') === 0) {
+        return $posterFileName; // Already has the full path
+    }
+    return 'uploads/posters/' . $posterFileName; // Prepend the directory
 }
 
 ?>

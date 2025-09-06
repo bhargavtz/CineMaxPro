@@ -153,60 +153,13 @@ $upcoming_movies = $pdo->query("SELECT * FROM movies WHERE release_date > CURDAT
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-5xl font-extrabold mb-6 text-red-500">Stay Updated</h2>
             <p class="text-xl mb-10 text-gray-300">Subscribe to our newsletter for the latest movie updates and special offers!</p>
-            <form class="max-w-2xl mx-auto flex flex-col md:flex-row gap-4">
-                <input type="email" placeholder="Enter your email" class="flex-grow p-4 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-400">
+            <form id="newsletter-form" action="subscribe.php" method="POST" class="max-w-2xl mx-auto flex flex-col md:flex-row gap-4">
+                <input type="email" id="newsletter-email" name="email" placeholder="Enter your email" required class="flex-grow p-4 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-400">
                 <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-10 rounded-lg transition duration-300 transform hover:scale-105">Subscribe</button>
             </form>
+            <p id="newsletter-message" class="mt-4 text-gray-400"></p>
         </div>
     </section>
 
     <!-- Footer -->
     <?php require_once __DIR__ . '/includes/footer.php'; ?>
-
-    <!-- Theme Toggle Script (Duplicated from header, but needed here for standalone page) -->
-    <script>
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeToggleMobile = document.getElementById('theme-toggle-mobile');
-        const body = document.body;
-        const currentTheme = localStorage.getItem('theme');
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        const setTheme = (theme) => {
-            body.classList.remove('light-mode', 'dark-mode'); // Remove existing themes
-            body.classList.add(theme);
-            if (theme === 'dark-mode') {
-                themeToggle.textContent = 'Light Mode';
-                if (themeToggleMobile) themeToggleMobile.textContent = 'Light Mode';
-            } else {
-                themeToggle.textContent = 'Dark Mode';
-                if (themeToggleMobile) themeToggleMobile.textContent = 'Dark Mode';
-            }
-        };
-
-        if (currentTheme) {
-            setTheme(currentTheme);
-        } else {
-            setTheme('dark-mode'); // Default to dark mode for the new design
-        }
-
-        const toggleTheme = () => {
-            body.classList.toggle('dark-mode');
-            const newTheme = body.classList.contains('dark-mode') ? 'dark-mode' : 'light-mode';
-            localStorage.setItem('theme', newTheme);
-            setTheme(newTheme);
-        };
-
-        themeToggle.addEventListener('click', toggleTheme);
-        if (themeToggleMobile) {
-            themeToggleMobile.addEventListener('click', toggleTheme);
-        }
-
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-    </script>
-</body>
-</html>
-</body>
-</html>
